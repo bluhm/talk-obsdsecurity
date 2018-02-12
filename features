@@ -1,0 +1,15 @@
+
+mallocarray
+pledge
+sendsyslog
+privsep
+fd exhaustion
+trapsledge
+random page
+arc4random
+boot.random
+getentropy
+karl
+explicit_bzero/freezero
+fork+exec
+w^x
