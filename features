@@ -1,6 +1,8 @@
 
+https://www.openbsd.org/innovations.html
+
 mallocarray
-pledge
+pledge (DNS sockets)
 sendsyslog
 privsep
 fd exhaustion
@@ -9,7 +11,19 @@ random page
 arc4random
 boot.random
 getentropy
-karl
+karl, random link, gap, locore0
 explicit_bzero/freezero
-fork+exec
+fork+exec (ssh)
 w^x
+malloc options, unmap, guard pages, canaries
+libc relinking
+stack protector cookie
+library PIE
+static PIE
+SROP
+kbind(2)
+-fwrapv
+stack-protector to syslog
+OpenNTPD
+LibreSSL
+
