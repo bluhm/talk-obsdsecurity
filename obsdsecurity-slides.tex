@@ -32,6 +32,26 @@
 \tableofcontents
 \end{frame}
 
+\subsection{kbind}
+\begin{frame}{kbind(2)}
+\begin{tikzpicture}
+\draw
+    node [draw,minimum height=3cm,minimum width=1.5cm] (prog) {Prog};
+\draw (prog.east) [->] -- ++(4,0) node [midway,above] {function()} -- ++(0,-1)
+    node [draw,below] (plt) {PLT};
+\draw (plt.south) [<-,dotted,thick] -- ++(0,-2)
+    node [midway,right,align=center] {read\\indirect\\jump}
+    node [draw,solid,thin,below] (got) {GOT};
+\draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
+    node [midway,below,align=center] {write\\function\\address}
+    node [draw,solid,thin,left,black] (ldso) {ld.so};
+\draw (plt.west) [<->] -| 
+    node [near end,left,align=center] {lazy\\binding} (ldso);
+\draw (plt.east) [->] -- ++(3.5,0) node [midway,above] {function()}
+    node [draw,right,minimum height=3cm,minimum width=1.5cm] (lib) {Lib};
+    
+\end{tikzpicture}
+\end{frame}
 
 \subsection{Questions}
 \begin{frame}{Questions}
