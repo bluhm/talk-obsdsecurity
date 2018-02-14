@@ -32,25 +32,46 @@
 \tableofcontents
 \end{frame}
 
-\subsection{kbind}
-\begin{frame}{kbind(2)}
+\section{kbind(2) System Call}
+
+\subsection{Lazy Binding}
+\begin{frame}{Lazy Binding}
 \begin{tikzpicture}
 \draw
     node [draw,minimum height=3cm,minimum width=1.5cm] (prog) {Prog};
 \draw (prog.east) [->] -- ++(4,0) node [midway,above] {function()} -- ++(0,-1)
     node [draw,below] (plt) {PLT};
 \draw (plt.south) [<-,dotted,thick] -- ++(0,-2)
-    node [midway,right,align=center] {read\\indirect\\jump}
+    node [midway,right,align=center] {read\\ indirect\\ jump}
     node [draw,solid,thin,below] (got) {GOT};
-\draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
-    node [midway,below,align=center] {write\\function\\address}
+in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
+    node [midway,below,align=center] {modify\\ function\\ address}
     node [draw,solid,thin,left,black] (ldso) {ld.so};
 \draw (plt.west) [<->] -| 
-    node [near end,left,align=center] {lazy\\binding} (ldso);
+    node [near end,left,align=center] {lazy\\ binding} (ldso);
 \draw (plt.east) [->] -- ++(3.5,0) node [midway,above] {function()}
     node [draw,right,minimum height=3cm,minimum width=1.5cm] (lib) {Lib};
-    
 \end{tikzpicture}
+\end{frame}
+
+\subsection{Dangerous PLT GOT}
+\begin{frame}{Dangerous PLT GOT}
+\begin{itemize}
+    \item Procedure Linkage Table
+    \item Global Offset Table
+    \item writeable table of code pointers
+    \item mprotect(2) in ld.so is another gadget
+\end{itemize}
+\end{frame}
+
+\subsection{Solution kbind(2)}
+\begin{frame}{Solution kbind(2)}
+\begin{itemize}
+    \item modifies single GOT entry
+    \item implicit atomic mprotect(2)
+    \item can only called from ld.so(1)
+    \item protected by data cookie
+\end{itemize}
 \end{frame}
 
 \subsection{Questions}
