@@ -32,7 +32,7 @@
 \tableofcontents
 \end{frame}
 
-\section{kbind(2) System Call}
+\section{kbind(2)}
 
 \subsection{Lazy Binding}
 \begin{frame}{Lazy Binding}
@@ -64,13 +64,46 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
-\subsection{Solution kbind(2)}
-\begin{frame}{Solution kbind(2)}
+\subsection{kbind(2) System Call}
+\begin{frame}{kbind(2) System Call}
 \begin{itemize}
     \item modifies single GOT entry
     \item implicit atomic mprotect(2)
     \item can only called from ld.so(1)
     \item protected by data cookie
+\end{itemize}
+\end{frame}
+
+\section{pledge(2)}
+
+\subsection{pledge(2) Motivation}
+\begin{frame}{pledge(2) Motivation}
+\begin{itemize}
+    \item restrict system calls
+    \item declare functional requirements
+    \item tool for programmer
+    \item abort process at violation
+    \item log problems or attacks
+\end{itemize}
+\end{frame}
+
+\subsection{Way to pledge(2)}
+\begin{frame}{Way to pledge(2)}
+\begin{itemize}
+    \item studdy existing programs
+    \item pattern initialization and main loop
+    \item design classes of promises
+    \item reimplement some libc functions
+    \item pledge nearly all programs
+\end{itemize}
+\end{frame}
+
+\subsection{pledge(2) Consequences}
+\begin{frame}{pledge(2) Consequences}
+\begin{itemize}
+    \item cleanup program flow
+    \item delete (mis-)features
+    \item design security model
 \end{itemize}
 \end{frame}
 
@@ -87,6 +120,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \begin{frame}{Links}
 \url{https://www.openbsd.org/papers/bsdtw.pdf}
 \url{https://www.technovelty.org/linux/plt-and-got-the-key-to-code-sharing-and-dynamic-libraries.html}
+\url{https://man.openbsd.org/manual/cgi?kbind} XXX
 \end{frame}
 
 \end{document}
