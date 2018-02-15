@@ -32,6 +32,34 @@
 \tableofcontents
 \end{frame}
 
+\subsection{Better malloc(3) API}
+\begin{frame}{Better malloc(3) API}
+\begin{itemize}
+    \item {\texttt malloc(nmemb * size)}\\
+	may overflow.
+    \item {\texttt calloc(nmemb, size)}\\
+	has better API.
+    \item {\texttt reallocarray(ptr, nmemb, size)}\\
+	replaces {\texttt malloc(3)} and {\texttt realloc(3)}.
+    \item Libc does overflow check!
+\end{itemize}
+\end{frame}
+
+\subsection{Clear Sensitive Memory}
+\begin{frame}{Clear Sensitive Memory}
+\begin{itemize}
+    \item {\texttt bzero(buf, len); free(buf)}\\
+	is dead store and optimzed away.
+    \item {\texttt explicit\_bzero(buf, len)}
+	is not removed by compiler.
+    \item {\texttt freezero(ptr, len)}\\
+	clears memory during {\texttt free(3)}.
+    \item {\texttt recallocarray(ptr, oldnmemb, nmemb, size)}\\
+	clears memory during {\texttt realloc(3)}.
+\end{itemize}
+\end{frame}
+
+
 \section{kbind(2)}
 
 \subsection{Lazy Binding}
@@ -54,8 +82,8 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{tikzpicture}
 \end{frame}
 
-\subsection{Dangerous PLT GOT}
-\begin{frame}{Dangerous PLT GOT}
+\subsection{Dangerous PLT and GOT}
+\begin{frame}{Dangerous PLT and GOT}
 \begin{itemize}
     \item Procedure Linkage Table
     \item Global Offset Table
