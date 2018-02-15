@@ -15,7 +15,6 @@
 \documentclass[14pt]{beamer}
 \usetheme{Frankfurt}
 \usepackage{tikz}
-\usetikzlibrary{shapes.geometric}
 \author{Alexander Bluhm}
 \title{OpenBSD Security Features}
 \institute{genua GmbH\\ \url{bluhm@genua.de}\\ \url{bluhm@openbsd.org}}
@@ -75,7 +74,7 @@
 in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     node [midway,below,align=center] {modify\\ function\\ address}
     node [draw,solid,thin,left,black] (ldso) {ld.so};
-\draw (plt.west) [<->] -| 
+\draw (plt.west) [<->] -|
     node [near end,left,align=center] {lazy\\ binding} (ldso);
 \draw (plt.east) [->] -- ++(3,0) node [midway,above] {function()}
     node [draw,right,minimum height=3cm,minimum width=1.5cm] (lib) {Lib};
@@ -135,6 +134,43 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
+\section{Priviledge Separation}
+
+\subsection{Priviledge Separation in Processes}
+\begin{frame}{Priviledge Separation in Processes}
+\begin{itemize}
+    \item identify isolated tasks with high risk
+    \item {\texttt socketpair(2)}
+    \item {\texttt fork(2)}
+    \item {\texttt chroot(2)}
+    \item {\texttt setuid(2)}
+    \item {\texttt pledge(2)}
+    \item {\texttt imsg\_init(3)}
+    \item file descriptor passing
+\end{itemize}
+\end{frame}
+
+\subsection{Programs with Privsep}
+\begin{frame}{Programs with Privsep}
+\begin{tikzpicture}
+\draw [grow=right,level distance=2cm,sibling distance=3cm]
+    (0,0) node [draw,circle,align=center] (ospfd) {ospfd}
+    [edge from parent/.style={draw,->}]
+    child { node [draw,circle,align=center] (rde) {route\\ decision\\ engine} }
+    child { node [draw,circle,align=center] (ospfe) {ospf\\ engine} };
+\draw [grow'=right,level distance=2cm,sibling distance=2cm]
+    (4.3,0) node [draw,circle,align=center] (relayd) {relayd}
+    [edge from parent/.style={draw,->}]
+    child { node [draw,circle,align=center] (proc1) {proc1} }
+    child { node [draw,circle,align=center] (proc2) {proc2} }
+    child { node [draw,circle,align=center,yshift=-1cm] (procn) {procN} };
+\draw [grow=down,level distance=3cm]
+    (8.5,1) node [draw,circle,align=center] (parent) {priv\\ parent}
+    [edge from parent/.style={draw,->}]
+    child { node [draw,circle,align=center] (syslogd) {syslogd} };
+\end{tikzpicture}
+\end{frame}
+
 \section{Virtual Address Layout}
 
 \subsection{fork+exec}
@@ -177,7 +213,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{Links}
 \begin{frame}{Links}
 \begin{itemize}
-    \item OpenBSD Innovations 
+    \item OpenBSD Innovations
 	{\small \url{https://www.openbsd.org/innovations.html}}
     \item deraadt@ Slides about Mitigations
 	{\small \url{https://www.openbsd.org/papers/bsdtw.pdf}}
