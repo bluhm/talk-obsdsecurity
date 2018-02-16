@@ -21,6 +21,7 @@
 \title{OpenBSD Security Features}
 \institute{genua GmbH\\ \url{bluhm@genua.de}\\ \url{bluhm@openbsd.org}}
 \date{September 20, 2018}
+\let\Tiny\tiny
 
 \begin{document}
 
@@ -77,22 +78,15 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{tikzpicture}
 \end{frame}
 
-\subsection{Dangerous PLT and GOT}
-\begin{frame}{Dangerous PLT and GOT}
-\begin{itemize}
-    \item Procedure Linkage Table
-    \item Global Offset Table
-    \item writeable table of code pointers
-\end{itemize}
-\end{frame}
-
 \subsection{kbind(2) System Call}
 \begin{frame}{kbind(2) System Call}
 \begin{itemize}
-    \item modifies single GOT entry
-    \item implicit atomic mprotect(2)
-    \item can only called from ld.so(1)
-    \item protected by data cookie
+    \item Procedure Linkage Table
+    \item Global Offset Table
+    \item avoid writeable table of code pointers
+    \item {\texttt kbind(param, psize, cookie)}
+    \item {\texttt struct \_\_kbind \textbraceleft{} kb\_addr; kb\_size;
+	\textbraceright{} param}
 \end{itemize}
 \end{frame}
 
