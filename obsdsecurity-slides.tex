@@ -89,7 +89,6 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item Procedure Linkage Table
     \item Global Offset Table
     \item writeable table of code pointers
-    \item mprotect(2) in ld.so is another gadget
 \end{itemize}
 \end{frame}
 
@@ -139,7 +138,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{New System Calls}
 \begin{frame}{New System Calls}
 \begin{itemize}
-    \item {\texttt socket(..., SOCK\_DGRAM\textpipe{}SOCK\_DNS, ...) }
+    \item {\texttt socket(..., SOCK\_DGRAM \textpipe{} SOCK\_DNS, ...) }
     \item {\texttt sendsyslog("log message", 11, LOG\_CONS) }
     \item {\texttt getentropy(buf, buflen) }
 \end{itemize}
@@ -224,7 +223,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \draw (lib1.east) [<-] -- (ldso.west);
 \draw (lib2.east) [<-] -- (ldso.west);
 \draw (prog.south east) [<-] -- +(1,0) node [anchor=west]
-    {PIE position independent executable};
+    {position independent executable};
 \end{tikzpicture}
 \end{frame}
 
@@ -267,6 +266,42 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \begin{frame}{Signal Cookie}
 \includegraphics[width=\textwidth]{img/anti-srop.ps}
 \end{frame}
+
+\subsection{Page Protection}
+\begin{frame}{Page Protection}
+\begin{tikzpicture}
+\draw
+    (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (proc) {}
+    +(0,-0.5) node [draw,minimum width=2cm,fill=red] (stack) {stack}
+    +(0,-1.8) node [draw,minimum width=2cm,fill=green] (jit) {JIT}
+    +(0,-3.1) node [draw,minimum width=2cm,fill=blue] (bss) {bss}
+    +(0,-3.9) node [draw,minimum width=2cm,fill=yellow] (data) {data}
+    +(0,-4.7) node [draw,minimum width=2cm,fill=brown] (rodata) {rodata}
+    +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] (text) {text};
+\draw (stack.east) [<-] -- +(1,0) node [anchor=west] {read/write};
+\draw (jit.east) +(1,0) node [anchor=south west] (mwrite)
+    {mprotect(PROT\_WRITE)} (mwrite.west) [->] -- (jit.east);
+\draw (jit.east) +(1,0) node [anchor=north west] (mexec)
+    {mprotect(PROT\_EXEC)} (mexec.west) [->] -- (jit.east);
+\draw (bss.east) [<-] -- +(1,0) node [anchor=west] {read/write};
+\draw (data.east) [<-] -- +(1,0) node [anchor=west] {read/write};
+\draw (rodata.east) [<-] -- +(1,0) node [anchor=west] {read};
+\draw (text.east) [<-] -- +(1,0) node [anchor=west] {read/exec};
+\end{tikzpicture}
+\end{frame}
+
+\subsection{W\^{}X Write Xor Execute}
+\begin{frame}{W\^{}X Write Xor Execute}
+\begin{itemize}
+    \item ld -z wxneeded
+    \item mount -o wxallowed
+    \item {\texttt mprotect(PROT\_WRITE \textpipe{} PROT\_EXEC)}
+    \item {\texttt mmap(PROT\_WRITE \textpipe{} PROT\_EXEC)}
+    \item sysctl kern.wxabort=1
+\end{itemize}
+\end{frame}
+
+\section{Compiler}
 
 \subsection{Questions}
 \begin{frame}{Questions}
