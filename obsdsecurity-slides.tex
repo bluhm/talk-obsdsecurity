@@ -15,6 +15,7 @@
 \documentclass[14pt]{beamer}
 \usetheme{Frankfurt}
 \usepackage{tikz}
+\usepackage{graphicx}
 \author{Alexander Bluhm}
 \title{OpenBSD Security Features}
 \institute{genua GmbH\\ \url{bluhm@genua.de}\\ \url{bluhm@openbsd.org}}
@@ -199,6 +200,21 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \draw [->] (p) to [thick,bend left,edge label={fork(2)}] (f);
 \draw [->] (f) to [thick,bend left,edge label={execve(2)}] (e);
 \end{tikzpicture}
+\end{frame}
+
+\subsection{sigreturn(2) from Signal Handler}
+\begin{frame}{sigreturn(2) from Signal Handler}
+\includegraphics[width=\textwidth]{img/sigreturn.ps}
+\end{frame}
+
+\subsection{SROP Signal Return Oriented Programming}
+\begin{frame}{SROP Signal Return Oriented Programming}
+\includegraphics[width=\textwidth]{img/srop.ps}
+\end{frame}
+
+\subsection{Signal Cookie}
+\begin{frame}{Signal Cookie}
+\includegraphics[width=\textwidth]{img/anti-srop.ps}
 \end{frame}
 
 \subsection{Questions}
