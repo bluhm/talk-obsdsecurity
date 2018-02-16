@@ -33,30 +33,24 @@
 \tableofcontents
 \end{frame}
 
-\subsection{Better malloc(3) API}
-\begin{frame}{Better malloc(3) API}
+\subsection{Avoid malloc(3) Overflow}
+\begin{frame}{Avoid malloc(3) Overflow}
 \begin{itemize}
-    \item {\texttt malloc(nmemb * size)}\\
-	may overflow.
-    \item {\texttt calloc(nmemb, size)}\\
-	has better API.
-    \item {\texttt reallocarray(ptr, nmemb, size)}\\
-	replaces {\texttt malloc(3)} and {\texttt realloc(3)}.
-    \item Libc does overflow check!
+    \item {\texttt malloc(nmemb * size)}
+    \item {\texttt calloc(nmemb, size)}
+    \item {\texttt reallocarray(ptr, nmemb, size)}
+    \item Libc does overflow check.
 \end{itemize}
 \end{frame}
 
 \subsection{Clear Sensitive Memory}
 \begin{frame}{Clear Sensitive Memory}
 \begin{itemize}
-    \item {\texttt bzero(buf, len); free(buf)}\\
-	is dead store and optimzed away.
+    \item {\texttt bzero(buf, len); free(buf)}
     \item {\texttt explicit\_bzero(buf, len)}
-	is not removed by compiler.
-    \item {\texttt freezero(ptr, len)}\\
-	clears memory during {\texttt free(3)}.
-    \item {\texttt recallocarray(ptr, oldnmemb, nmemb, size)}\\
-	clears memory during {\texttt realloc(3)}.
+    \item {\texttt freezero(ptr, len)}
+    \item {\texttt recallocarray(ptr, oldnmemb, nmemb, size)}
+    \item Libc does memset(3).
 \end{itemize}
 \end{frame}
 
