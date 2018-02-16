@@ -1,23 +1,15 @@
 
-sendsyslog
-privsep
-fd exhaustion
 trap sledge
 random page
 arc4random
 rand(3), random(3)
 boot.random
-getentropy
 karl, random link, gap, locore0
 w^x
 malloc options, unmap, guard pages, canaries
 libc relinking
 stack protector cookie
-library PIE
-static PIE
-SROP signal
 -fwrapv
-stack-protector to syslog
 OpenNTPD
 LibreSSL
 
@@ -25,5 +17,13 @@ mallocarray
 explicit_bzero/freezero
 kbind(2)
 pledge (DNS sockets)
+getentropy
 fork+exec (ssh)
 https://www.openbsd.org/innovations.html
+privsep
+sendsyslog
+fd exhaustion
+library PIE
+static PIE
+SROP signal
+stack-protector to syslog

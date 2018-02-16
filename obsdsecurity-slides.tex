@@ -127,6 +127,15 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
+\subsection{pledge(2) Consequences}
+\begin{frame}{pledge(2) Consequences}
+\begin{itemize}
+    \item cleanup program flow
+    \item delete (mis-)features
+    \item design security model
+\end{itemize}
+\end{frame}
+
 \subsection{New System Calls}
 \begin{frame}{New System Calls}
 \begin{itemize}
@@ -136,12 +145,13 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
-\subsection{pledge(2) Consequences}
-\begin{frame}{pledge(2) Consequences}
+\subsection{Use sendsyslog(2)}
+\begin{frame}{Use sendsyslog(2)}
 \begin{itemize}
-    \item cleanup program flow
-    \item delete (mis-)features
-    \item design security model
+    \item {\texttt syslog(3)}, obviously
+    \item {\texttt memcpy(3)}
+    \item stack protector
+    \item ld.so
 \end{itemize}
 \end{frame}
 
