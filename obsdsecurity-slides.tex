@@ -178,24 +178,24 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \begin{tikzpicture}
 \draw
     (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (p) {}
-    +(0,-0.6) node [draw,minimum width=2cm,red,minimum height=1cm] {stack}
-    +(0,-1.8) node [draw,minimum width=2cm,green] {heap}
-    +(0,-3.2) node [draw,minimum width=2cm,blue] {lib1}
-    +(0,-4.7) node [draw,minimum width=2cm,yellow] {lib2}
-    +(0,-5.5) node [draw,minimum width=2cm,magenta] {prog};
+    +(0,-0.6) node [draw,minimum width=2cm,fill=red,minimum height=1cm] {stack}
+    +(0,-1.8) node [draw,minimum width=2cm,fill=green] {heap}
+    +(0,-3.2) node [draw,minimum width=2cm,fill=blue] {lib1}
+    +(0,-4.7) node [draw,minimum width=2cm,fill=yellow] {lib2}
+    +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
 \draw
     (4,0) node [draw,below,minimum width=2cm,minimum height=6cm] (f) {}
-    +(0,-0.6) node [draw,minimum width=2cm,red,minimum height=1cm] {stack}
-    +(0,-1.8) node [draw,minimum width=2cm,green] {heap}
-    +(0,-3.2) node [draw,minimum width=2cm,blue] {lib1}
-    +(0,-4.7) node [draw,minimum width=2cm,yellow] {lib2}
-    +(0,-5.5) node [draw,minimum width=2cm,magenta] {prog};
+    +(0,-0.6) node [draw,minimum width=2cm,fill=red,minimum height=1cm] {stack}
+    +(0,-1.8) node [draw,minimum width=2cm,fill=green] {heap}
+    +(0,-3.2) node [draw,minimum width=2cm,fill=blue] {lib1}
+    +(0,-4.7) node [draw,minimum width=2cm,fill=yellow] {lib2}
+    +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
 \draw
     (8.5,0) node [draw,below,minimum width=2cm,minimum height=6cm] (e) {}
-    +(0,-0.8) node [draw,minimum width=2cm,red] {stack}
-    +(0,-3.3) node [draw,minimum width=2cm,yellow] {lib2}
-    +(0,-4.1) node [draw,minimum width=2cm,blue] {lib1}
-    +(0,-5.2) node [draw,minimum width=2cm,magenta] {prog};
+    +(0,-0.8) node [draw,minimum width=2cm,fill=red] {stack}
+    +(0,-3.3) node [draw,minimum width=2cm,fill=yellow] {lib2}
+    +(0,-4.1) node [draw,minimum width=2cm,fill=blue] {lib1}
+    +(0,-5.2) node [draw,minimum width=2cm,fill=magenta] {prog};
 \draw [->] (p) to [thick,bend left,edge label={fork(2)}] (f);
 \draw [->] (f) to [thick,bend left,edge label={execve(2)}] (e);
 \end{tikzpicture}
