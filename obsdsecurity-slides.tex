@@ -16,6 +16,7 @@
 \usetheme{Frankfurt}
 \usepackage{tikz}
 \usepackage{graphicx}
+\usepackage{tipa}
 \author{Alexander Bluhm}
 \title{OpenBSD Security Features}
 \institute{genua GmbH\\ \url{bluhm@genua.de}\\ \url{bluhm@openbsd.org}}
@@ -123,6 +124,15 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item design classes of promises
     \item reimplement some libc functions
     \item pledge nearly all programs
+\end{itemize}
+\end{frame}
+
+\subsection{New System Calls}
+\begin{frame}{New System Calls}
+\begin{itemize}
+    \item {\texttt socket(..., SOCK\_DGRAM\textpipe{}SOCK\_DNS, ...) }
+    \item {\texttt sendsyslog("log message", 11, LOG\_CONS) }
+    \item {\texttt getentropy(buf, buflen) }
 \end{itemize}
 \end{frame}
 
@@ -257,7 +267,12 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 	{\small \url{https://www.openbsd.org/papers/bsdtw.pdf}}
     \item Man Pages at {\small \url{https://man.openbsd.org/}}\\
 	\texttt
-	pledge(2) kbind(2)
+	pledge(2)
+	kbind(2) 
+	sendsyslog(2)
+	getentropy(2)
+	getdtablecount(2)
+	
 \end{itemize}
 \end{frame}
 
