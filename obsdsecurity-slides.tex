@@ -174,6 +174,31 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 
 \section{Virtual Address Layout}
 
+\subsection{ASLR Address Space Layout Randomization}
+\begin{frame}{ASLR Address Space Layout Randomization}
+\begin{tikzpicture}
+\draw
+    (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (proc) {}
+    +(0,-0.5) node [draw,minimum width=2cm,fill=red] (stack) {stack}
+    +(0,-1.7) node [draw,minimum width=2cm,fill=green] (heap1) {heap1}
+    +(0,-2.8) node [draw,minimum width=2cm,fill=blue] (heap2) {heap2}
+    +(0,-3.7) node [draw,minimum width=2cm,fill=yellow] (lib1) {lib1}
+    +(0,-4.7) node [draw,minimum width=2cm,fill=brown] (lib2) {lib2}
+    +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] (prog) {prog};
+\draw (stack.north east) [<-] -- +(1,0) node [anchor=west] {stack gap};
+\draw (heap1.east) [<-] -- +(1,0) node [anchor=west] {map at random address};
+\path (heap1.east) -- (heap2.east) coordinate [midway] (heap);
+\draw (heap) [<-] -- +(1,0) node [anchor=west] {guard page};
+\draw (heap2.east) [<-] -- +(1,0) node [anchor=west] {unmap after free};
+\path (lib1.east) -- (lib2.east) coordinate [midway] (lib)
+    (lib) +(1,0) node [anchor=west] (ldso) {load randomly};
+\draw (lib1.east) [<-] -- (ldso.west);
+\draw (lib2.east) [<-] -- (ldso.west);
+\draw (prog.south east) [<-] -- +(1,0) node [anchor=west]
+    {PIE position independent executable};
+\end{tikzpicture}
+\end{frame}
+
 \subsection{fork+exec}
 \begin{frame}{fork+exec}
 \begin{tikzpicture}
@@ -181,21 +206,18 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (p) {}
     +(0,-0.6) node [draw,minimum width=2cm,fill=red,minimum height=1cm] {stack}
     +(0,-1.8) node [draw,minimum width=2cm,fill=green] {heap}
-    +(0,-3.2) node [draw,minimum width=2cm,fill=blue] {lib1}
-    +(0,-4.7) node [draw,minimum width=2cm,fill=yellow] {lib2}
+    +(0,-3.2) node [draw,minimum width=2cm,fill=yellow] {lib1}
     +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
 \draw
     (4,0) node [draw,below,minimum width=2cm,minimum height=6cm] (f) {}
     +(0,-0.6) node [draw,minimum width=2cm,fill=red,minimum height=1cm] {stack}
     +(0,-1.8) node [draw,minimum width=2cm,fill=green] {heap}
-    +(0,-3.2) node [draw,minimum width=2cm,fill=blue] {lib1}
-    +(0,-4.7) node [draw,minimum width=2cm,fill=yellow] {lib2}
+    +(0,-3.2) node [draw,minimum width=2cm,fill=yellow] {lib1}
     +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
 \draw
     (8.5,0) node [draw,below,minimum width=2cm,minimum height=6cm] (e) {}
     +(0,-0.8) node [draw,minimum width=2cm,fill=red] {stack}
-    +(0,-3.3) node [draw,minimum width=2cm,fill=yellow] {lib2}
-    +(0,-4.1) node [draw,minimum width=2cm,fill=blue] {lib1}
+    +(0,-4.1) node [draw,minimum width=2cm,fill=yellow] {lib1}
     +(0,-5.2) node [draw,minimum width=2cm,fill=magenta] {prog};
 \draw [->] (p) to [thick,bend left,edge label={fork(2)}] (f);
 \draw [->] (f) to [thick,bend left,edge label={execve(2)}] (e);
