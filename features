@@ -10,8 +10,6 @@ stack protector cookie
 -fwrapv
 OpenNTPD
 LibreSSL
-ebx
-BROP
 
 mallocarray
 explicit_bzero/freezero
@@ -25,8 +23,10 @@ fd exhaustion
 library PIE
 static PIE
 trap sledge
+BROP
 SROP signal
 w^x
 ROP
+ebx
 stack-protector to syslog
 https://www.openbsd.org/innovations.html

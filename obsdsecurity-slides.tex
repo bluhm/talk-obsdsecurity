@@ -17,6 +17,8 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{tipa}
+\usepackage{alltt}
+\usepackage{xcolor}
 \author{Alexander Bluhm}
 \title{OpenBSD Security Features}
 \institute{genua GmbH\\ \url{bluhm@genua.de}\\ \url{bluhm@openbsd.org}}
@@ -391,6 +393,43 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{verbatim}
 \end{frame}
 
+\subsection{0xc3 Return from Anywhere}
+\begin{frame}[fragile]{0xc3 Return from Anywhere}
+\begin{itemize}
+    \item objdump -d /usr/bin/clang 
+\end{itemize}
+\begin{alltt}
+4022ff: 48 83 c0 {\color{blue}08}  add  $0x8,%rax
+402303: {\color{blue}48 39} {\color{red}c3}     cmp  %rax,%rbx
+402306: 75 ed        jne  4022f5
+\end{alltt}
+\begin{itemize}
+    \item objdump -d --start-address=0x402302 /usr/bin/clang 
+\end{itemize}
+\begin{alltt}
+402302: {\color{blue}08 48 39}     or   %cl,0x39(%rax)
+402305: {\color{red}c3}           retq   
+\end{alltt}
+\end{frame}
+
+\subsection{Avoid RBX Register}
+\begin{frame}[fragile]{Avoid RBX Register}
+\begin{itemize}
+    \item LLVM compiler patch
+\end{itemize}
+\begin{alltt}
+-EAX,ECX,EDX,ESI,EDI,{\color{red}EBX},EBP,ESP,
+-R8D,R9D,R10D,R11D,R14D,R15D,R12D,R13D
++EAX,ECX,EDX,ESI,EDI,R8D,R9D,R10D,
++R11D,R14D,R15D,R12D,R13D,{\color{red}EBX},EBP,ESP
+\end{alltt}
+\begin{alltt}
+ RAX,RCX,RDX,RSI,RDI,R8,R9,R10,R11,
+-{\color{red}RBX},R14,R15,R12,R13,RBP,RSP,RIP
++R14,R15,R12,R13,{\color{red}RBX},RBP,RSP,RIP
+\end{alltt}
+\end{frame}
+
 \subsection{BROP Blind Return Oriented Programming}
 \begin{frame}{BROP Blind Return Oriented Programming}
 \begin{tikzpicture}
@@ -414,7 +453,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (data.east)
     node [anchor=west,midway] {read/write};
 \draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (gap3.east)
-    node [anchor=west,midway] {crash};
+    node [anchor=west,near end] {crash};
 
 \end{tikzpicture}
 \end{frame}
