@@ -39,9 +39,9 @@
 \subsection{Avoid malloc(3) Overflow}
 \begin{frame}{Avoid malloc(3) Overflow}
 \begin{itemize}
-    \item {\texttt malloc(nmemb * size)}
-    \item {\texttt calloc(nmemb, size)}
-    \item {\texttt reallocarray(ptr, nmemb, size)}
+    \item \texttt{malloc(nmemb * size)}
+    \item \texttt{calloc(nmemb, size)}
+    \item \texttt{reallocarray(ptr, nmemb, size)}
     \item Libc does overflow check.
 \end{itemize}
 \end{frame}
@@ -49,22 +49,22 @@
 \subsection{Clear Sensitive Memory}
 \begin{frame}{Clear Sensitive Memory}
 \begin{itemize}
-    \item {\texttt bzero(buf, len); free(buf)}
-    \item {\texttt explicit\_bzero(buf, len)}
-    \item {\texttt freezero(ptr, len)}
-    \item {\texttt recallocarray(ptr, oldnmemb, nmemb, size)}
-    \item Libc does memset(3).
+    \item \texttt{bzero(buf, len); free(buf)}
+    \item \texttt{explicit\_bzero(buf, len)}
+    \item \texttt{freezero(ptr, len)}
+    \item \texttt{recallocarray(ptr, oldnmemb, nmemb, size)}
+    \item Libc does \texttt{memset(3)}.
 \end{itemize}
 \end{frame}
 
 \subsection{Random Everywhere}
 \begin{frame}{Random Everywhere}
 \begin{itemize}
-    \item {\texttt arc4random()} ChaCha20
-    \item safe {\texttt fork()}
-    \item {\texttt getentropy(buf, buflen)}
-    \item {\texttt srand[om]\_deterministic(seed)}
-    \item {\texttt .openbsd.randomdata} ELF section
+    \item \texttt{arc4random()} ChaCha20
+    \item safe \texttt{fork()}
+    \item \texttt{getentropy(buf, buflen)}
+    \item \texttt{srand[om]\_deterministic(seed)}
+    \item \texttt{.openbsd.randomdata} ELF section
     \item /etc/random.seed
     \item /var/db/host.random
 \end{itemize}
@@ -76,17 +76,17 @@
     \item kernel
     \begin{itemize}
 	\item stack protector
-	\item {\texttt arc4random(9)}
+	\item \texttt{arc4random(9)}
     \end{itemize}
     \item libc
     \begin{itemize}
 	\item stack protector
-	\item {\texttt setjmp(3)/longjmp(3)}
+	\item \texttt{setjmp(3)/longjmp(3)}
     \end{itemize}
     \item ld.so
     \begin{itemize}
 	\item stack protector
-	\item {\texttt kbind(3) cookie}
+	\item \texttt{kbind(3) cookie}
     \end{itemize}
 \end{itemize}
 \end{frame}
@@ -119,9 +119,8 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item Procedure Linkage Table
     \item Global Offset Table
     \item avoid writeable table of code pointers
-    \item {\texttt kbind(param, psize, cookie)}
-    \item {\texttt struct \_\_kbind \textbraceleft{} kb\_addr; kb\_size;
-	\textbraceright{} param}
+    \item \texttt{kbind(param, psize, cookie)}
+    \item \texttt{struct \_\_kbind \{ kb\_addr; kb\_size; \} param}
 \end{itemize}
 \end{frame}
 
@@ -161,17 +160,17 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{New System Calls}
 \begin{frame}{New System Calls}
 \begin{itemize}
-    \item {\texttt socket(..., SOCK\_DGRAM \textpipe{} SOCK\_DNS, ...) }
-    \item {\texttt sendsyslog("log message", 11, LOG\_CONS) }
-    \item {\texttt getentropy(buf, buflen) }
+    \item \texttt{socket(..., SOCK\_DGRAM \textpipe{} SOCK\_DNS, ...) }
+    \item \texttt{sendsyslog("log message", 11, LOG\_CONS) }
+    \item \texttt{getentropy(buf, buflen) }
 \end{itemize}
 \end{frame}
 
 \subsection{Use sendsyslog(2)}
 \begin{frame}{Use sendsyslog(2)}
 \begin{itemize}
-    \item {\texttt syslog(3)}, obviously
-    \item {\texttt memcpy(3)}
+    \item \texttt{syslog(3)}, obviously
+    \item \texttt{memcpy(3)}
     \item stack protector
     \item ld.so
 \end{itemize}
@@ -183,12 +182,12 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \begin{frame}{Priviledge Separation in Processes}
 \begin{itemize}
     \item identify isolated tasks with high risk
-    \item {\texttt socketpair(2)}
-    \item {\texttt fork(2)}
-    \item {\texttt chroot(2)}
-    \item {\texttt setuid(2)}
-    \item {\texttt pledge(2)}
-    \item {\texttt imsg\_init(3)}
+    \item \texttt{socketpair(2)}
+    \item \texttt{fork(2)}
+    \item \texttt{chroot(2)}
+    \item \texttt{setuid(2)}
+    \item \texttt{pledge(2)}
+    \item \texttt{imsg\_init(3)}
     \item file descriptor passing
 \end{itemize}
 \end{frame}
@@ -328,8 +327,8 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \begin{itemize}
     \item ld -z wxneeded
     \item mount -o wxallowed
-    \item {\texttt mprotect(..., PROT\_WRITE \textpipe{} PROT\_EXEC)}
-    \item {\texttt mmap(..., PROT\_WRITE \textpipe{} PROT\_EXEC, ...)}
+    \item \texttt{mprotect(..., PROT\_WRITE \textpipe{} PROT\_EXEC)}
+    \item \texttt{mmap(..., PROT\_WRITE \textpipe{} PROT\_EXEC, ...)}
     \item sysctl kern.wxabort=1
 \end{itemize}
 \end{frame}
@@ -504,19 +503,18 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{Links}
 \begin{frame}{Links}
 \begin{itemize}
-    \item OpenBSD Innovations
+    \item OpenBSD innovations
 	{\small \url{https://www.openbsd.org/innovations.html}}
-    \item deraadt@ Slides about Mitigations
+    \item deraadt@ slides about mitigations
 	{\small \url{https://www.openbsd.org/papers/bsdtw.pdf}}
-    \item Man Pages at {\small \url{https://man.openbsd.org/}}\\
-	\texttt
-	pledge(2)
+    \item man pages at {\small \url{https://man.openbsd.org/}}\\
+	\texttt{pledge(2)
 	kbind(2)
 	sendsyslog(2)
 	getentropy(2)
 	getdtablecount(2)
 	clang-local(1)
-	random(3)
+	random(3)}
 \end{itemize}
 \end{frame}
 
