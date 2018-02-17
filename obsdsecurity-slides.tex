@@ -412,11 +412,11 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{Trap Sledge}
 \begin{frame}[fragile]{Trap Sledge}
 \begin{alltt}
-40d435: {\color{red}cc}           int3
-40d436: {\color{red}cc}           int3
+40d435: \textcolor{red}{cc}           int3
+40d436: \textcolor{red}{cc}           int3
 ......
-40d43e: {\color{red}cc}           int3
-40d43f: {\color{red}cc}           int3
+40d43e: \textcolor{red}{cc}           int3
+40d43f: \textcolor{red}{cc}           int3
 40d440: 55           push %rbp
 40d441: 48 89 e5     mov  %rsp,%rbp
 40d444: 48 8b 45 10  mov  0x10(%rbp),%rax
@@ -432,16 +432,16 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item objdump -d /usr/bin/clang
 \end{itemize}
 \begin{alltt}
-4022ff: 48 83 c0 {\color{blue}08}  add  $0x8,%rax
-402303: {\color{blue}48 39} {\color{red}c3}     cmp  %rax,%rbx
+4022ff: 48 83 c0 \textcolor{blue}{08}  add  $0x8,%rax
+402303: \textcolor{blue}{48 39} \textcolor{red}{c3}     cmp  %rax,%rbx
 402306: 75 ed        jne  4022f5
 \end{alltt}
 \begin{itemize}
     \item objdump -d --start-address=0x402302 /usr/bin/clang
 \end{itemize}
 \begin{alltt}
-402302: {\color{blue}08 48 39}     or   %cl,0x39(%rax)
-402305: {\color{red}c3}           retq
+402302: \textcolor{blue}{08 48 39}     or   %cl,0x39(%rax)
+402305: \textcolor{red}{c3}           retq
 \end{alltt}
 \end{frame}
 
@@ -451,15 +451,15 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item LLVM compiler patch
 \end{itemize}
 \begin{alltt}
--EAX,ECX,EDX,ESI,EDI,{\color{red}EBX},EBP,ESP,
+-EAX,ECX,EDX,ESI,EDI,\textcolor{red}{EBX},EBP,ESP,
 -R8D,R9D,R10D,R11D,R14D,R15D,R12D,R13D
 +EAX,ECX,EDX,ESI,EDI,R8D,R9D,R10D,
-+R11D,R14D,R15D,R12D,R13D,{\color{red}EBX},EBP,ESP
++R11D,R14D,R15D,R12D,R13D,\textcolor{red}{EBX},EBP,ESP
 \end{alltt}
 \begin{alltt}
  RAX,RCX,RDX,RSI,RDI,R8,R9,R10,R11,
--{\color{red}RBX},R14,R15,R12,R13,RBP,RSP,RIP
-+R14,R15,R12,R13,{\color{red}RBX},RBP,RSP,RIP
+-\textcolor{red}{RBX},R14,R15,R12,R13,RBP,RSP,RIP
++R14,R15,R12,R13,\textcolor{red}{RBX},RBP,RSP,RIP
 \end{alltt}
 \end{frame}
 
