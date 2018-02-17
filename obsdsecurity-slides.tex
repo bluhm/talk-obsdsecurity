@@ -327,7 +327,8 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     (buffer.south west) +(-0.5,0) coordinate (bstart)
     (frame1.south west) +(-0.5,0) coordinate (bend)
     [->] (bstart) -- (bend) node [near end,left] {overflow};
-\draw [->] (return.east) to [out=30,in=330]  (nop.east);
+\draw [->] (return.east) .. controls +(1,0) and +(1,0) .. (nop.east)
+    node [anchor=west,midway] {execute};
 \end{tikzpicture}
 \end{frame}
 
@@ -388,6 +389,34 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 40d44c: 5d           pop  %rbp
 40d44d: c3           retq
 \end{verbatim}
+\end{frame}
+
+\subsection{BROP Blind Return Oriented Programming}
+\begin{frame}{BROP Blind Return Oriented Programming}
+\begin{tikzpicture}
+    [minimum width=2cm]
+\path
+    (0,0) node [draw,minimum height=6cm] (memory) {}
+    [below]
+    (memory.north) node (gap1) {}
+    (gap1.south) node [draw,minimum height=2cm,fill=blue!30] (text) {text}
+    (text.south) node (gap2) {}
+    (gap2.south) node [draw,,fill=yellow!30] (pointer) {pointer}
+    (pointer.south) node [draw,minimum height=2cm,fill=yellow!30] (data) {data}
+    (data.south) node (gap3) {};
+\draw [<-] (text.west) -- node [midway,above] {execute}
+    +(-3,0) node [left,draw,fill=red,minimum width=2cm] (pexe) {pointer};
+\draw [->] (pexe.east) -- (gap2.west) node [midway,below] {crash};
+\draw [<-] (pointer.west) -- node [midway,below] {indirect}
+    +(-3,0) node [left,draw,fill=red,minimum width=2cm] (pind) {pointer};
+\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (text.east)
+    node [anchor=west,midway] {execute};
+\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (data.east)
+    node [anchor=west,midway] {read/write};
+\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (gap3.east)
+    node [anchor=west,midway] {crash};
+
+\end{tikzpicture}
 \end{frame}
 
 \section{Compiler}
