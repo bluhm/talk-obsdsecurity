@@ -283,10 +283,42 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \begin{itemize}
     \item ld -z wxneeded
     \item mount -o wxallowed
-    \item {\texttt mprotect(PROT\_WRITE \textpipe{} PROT\_EXEC)}
-    \item {\texttt mmap(PROT\_WRITE \textpipe{} PROT\_EXEC)}
+    \item {\texttt mprotect(..., PROT\_WRITE \textpipe{} PROT\_EXEC)}
+    \item {\texttt mmap(..., PROT\_WRITE \textpipe{} PROT\_EXEC, ...)}
     \item sysctl kern.wxabort=1
 \end{itemize}
+\end{frame}
+
+\subsection{Stack Buffer Overflow}
+\begin{frame}{Stack Buffer Overflow}
+\begin{tikzpicture}
+\path
+    [minimum width=3cm,below]
+    (0,0) node [minimum height=6cm] (stack) {};
+\draw
+    (stack.south west) -- (stack.north west) --
+    (stack.north east) -- (stack.south east);
+\path
+    [minimum width=3cm,below]
+    (stack.north) node (gap) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
+    (frame2.south) node [draw,fill=green!60] (return1) {return}
+    (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
+    (frame1.south) node [draw,fill=red] (nop) {nop sledge}
+    (nop.south) node [draw,fill=red,minimum height=0.8cm] (payload) {payload}
+    (payload.south) node [draw,fill=red] (return) {return}
+    (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (buffer.south) node {...};
+\draw
+    (stack.north west) +(-1,0) coordinate (sstart)
+    (stack.south west) +(-1,0) coordinate (send)
+    [->] (sstart) -- (send) node [near end,left] {stack};
+\draw
+    (buffer.south west) +(-0.5,0) coordinate (bstart)
+    (frame1.south west) +(-0.5,0) coordinate (bend)
+    [->] (bstart) -- (bend) node [near end,left] {overflow};
+\draw [->] (return.east) to [out=30,in=330]  (nop.east);
+\end{tikzpicture}
 \end{frame}
 
 \subsection{ROP Return Oriented Programming}
@@ -301,8 +333,10 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \path
     [minimum width=2cm,below]
     (stack.north) node (gap) {}
-    (gap.south) node [draw,fill=yellow!60,minimum height=0.8cm] (frame) {frame}
-    (frame.south) node [draw,fill=red] (pointer2) {pointer}
+    (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
+    (frame2.south) node [draw,fill=green!60] (return1) {return}
+    (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
+    (frame1.south) node [draw,fill=red] (pointer2) {pointer}
     (pointer2.south) node [draw,fill=red] (pointer1) {pointer}
     (pointer1.south) node [draw,fill=red] (return) {return}
     (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
@@ -313,12 +347,12 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     [->] (sstart) -- (send) node [near end,left] {stack};
 \draw
     (buffer.south west) +(-0.5,0) coordinate (bstart)
-    (frame.south west) +(-0.5,0) coordinate (bend)
+    (frame1.south west) +(-0.5,0) coordinate (bend)
     [->] (bstart) -- (bend) node [near end,left] {overflow};
 
 \path
-    [text width=3cm,below,align=left]
-    (5,0) node [draw,minimum height=6cm] (text) {}
+    [text width=2.7cm,below,align=left]
+    (4.5,0) node [draw,minimum height=6cm] (text) {}
     +(0,-0.5) node [draw,fill=blue!30] (gadget0) {mov \$1,rdi\\ ret}
     +(0,-2.5) node [draw,fill=blue!30] (gadget1) {mov \$2,rsi\\ ret}
     +(0,-4.3) node [draw,fill=blue!30] (gadget2) {mov \$59,eax\\ syscall};
