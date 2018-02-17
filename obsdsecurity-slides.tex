@@ -75,17 +75,17 @@
 \begin{itemize}
     \item kernel
     \begin{itemize}
-	\item stack protector
+	\item stack protector guard
 	\item \texttt{arc4random(9)}
     \end{itemize}
     \item libc
     \begin{itemize}
-	\item stack protector
+	\item stack protector guard
 	\item \texttt{setjmp(3)/longjmp(3)}
     \end{itemize}
     \item ld.so
     \begin{itemize}
-	\item stack protector
+	\item stack protector guard
 	\item \texttt{kbind(3) cookie}
     \end{itemize}
 \end{itemize}
@@ -171,7 +171,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \begin{itemize}
     \item \texttt{syslog(3)}, obviously
     \item \texttt{memcpy(3)}
-    \item stack protector
+    \item stack protector smash handler
     \item ld.so
 \end{itemize}
 \end{frame}
@@ -348,7 +348,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
     (frame2.south) node [draw,fill=green!60] (return1) {return}
     (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
-    (frame1.south) node [draw,fill=red] (nop) {nop sledge}
+    (frame1.south) node [draw,fill=red] (nop) {nop sleg}
     (nop.south) node [draw,fill=red,minimum height=0.8cm] (payload) {payload}
     (payload.south) node [draw,fill=red] (return) {return}
     (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
@@ -363,6 +363,53 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     [->] (bstart) -- (bend) node [near end,left] {overflow};
 \draw [->] (return.east) .. controls +(1,0) and +(1,0) .. (nop.east)
     node [anchor=west,midway] {execute};
+\end{tikzpicture}
+\end{frame}
+
+\subsection{Stack Protector}
+\begin{frame}{Stack Protector}
+\begin{tikzpicture}
+\path
+    [minimum width=2cm,below]
+    (0,0) node [minimum height=6cm] (stack) {};
+\draw
+    (stack.south west) -- (stack.north west) --
+    (stack.north east) -- (stack.south east);
+\path
+    [minimum width=2cm,below]
+    (stack.north) node (gap) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=1.5cm] (frame) {frame}
+    (frame.south) node [draw,fill=green!60] (return) {return}
+    (return.south) node [draw,fill=yellow!60] (base) {baseptr}
+    (base.south) node [draw,text=white,fill=black] (guard) {guard}
+    (guard.south) node [draw,fill=yellow!60,minimum height=1.2cm] (buffer)
+	{buffer}
+    (buffer.south) node {...};
+\path
+    (guard.east) node [anchor=west,align=center] {fill with\\ random};
+
+\path
+    [minimum width=2cm,below]
+    (6,0) node [minimum height=6cm] (stack) {};
+\draw
+    (stack.south west) -- (stack.north west) --
+    (stack.north east) -- (stack.south east);
+\path
+    [minimum width=2cm,below]
+    (stack.north) node (gap) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=1cm] (frame) {frame}
+    (frame.south) node [draw,fill=red,minimum height=.5cm] (overflow) {}
+    (overflow.south) node [draw,fill=red] (return) {return}
+    (return.south) node [draw,fill=red] (base) {baseptr}
+    (base.south) node [draw,text=red,fill=black] (guard) {guard}
+    (guard.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (buffer.south) node {...};
+\draw
+    (buffer.south west) +(-0.5,0) coordinate (bstart)
+    (frame.south west) +(-0.5,0) coordinate (bend)
+    [->] (bstart) -- (bend) node [near end,left] {overflow};
+\path
+    (guard.east) node [anchor=west,align=center] {check\\ before\\ return};
 \end{tikzpicture}
 \end{frame}
 

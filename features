@@ -1,7 +1,6 @@
 
 karl, random link, gap, locore0
 malloc options, unmap, guard pages, canaries
-stack protector
 -fwrapv
 OpenNTPD
 LibreSSL
@@ -9,6 +8,7 @@ LibreSSL
 kern.allowkmem=1
 
 mallocarray
+stack protector
 explicit_bzero/freezero
 kbind(2)
 pledge (DNS sockets)
