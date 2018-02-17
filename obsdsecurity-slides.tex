@@ -240,14 +240,24 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{tikzpicture}
 \end{frame}
 
-\subsection{sigreturn(2) from Signal Handler}
-\begin{frame}{sigreturn(2) from Signal Handler}
-\includegraphics[width=\textwidth]{img/sigreturn.ps}
+\subsection{LibC Linking}
+\begin{frame}{LibC Linking}
+\includegraphics[width=\textwidth]{img/libc.ps}
+\end{frame}
+
+\subsection{LibC Reinking}
+\begin{frame}{LibC Reinking}
+\includegraphics[width=\textwidth]{img/new-libc.ps}
 \end{frame}
 
 \subsection{SROP Signal Return Oriented Programming}
 \begin{frame}{SROP Signal Return Oriented Programming}
 \includegraphics[width=\textwidth]{img/srop.ps}
+\end{frame}
+
+\subsection{sigreturn(2) from Signal Handler}
+\begin{frame}{sigreturn(2) from Signal Handler}
+\includegraphics[width=\textwidth]{img/sigreturn.ps}
 \end{frame}
 
 \subsection{Signal Cookie}
@@ -362,6 +372,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \draw [->] (pointer2.east) -- (gadget2.north west);
 \end{tikzpicture}
 \end{frame}
+
 
 \section{Compiler}
 
