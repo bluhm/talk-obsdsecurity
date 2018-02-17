@@ -193,7 +193,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{ASLR Address Space Layout Randomization}
 \begin{frame}{ASLR Address Space Layout Randomization}
 \begin{tikzpicture}
-\draw
+\path
     (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (proc) {}
     +(0,-0.5) node [draw,minimum width=2cm,fill=red] (stack) {stack}
     +(0,-1.7) node [draw,minimum width=2cm,fill=green] (heap1) {heap1}
@@ -218,19 +218,19 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{fork+exec}
 \begin{frame}{fork+exec}
 \begin{tikzpicture}
-\draw
+\path
     (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (p) {}
     +(0,-0.6) node [draw,minimum width=2cm,fill=red,minimum height=1cm] {stack}
     +(0,-1.8) node [draw,minimum width=2cm,fill=green] {heap}
     +(0,-3.2) node [draw,minimum width=2cm,fill=yellow] {lib1}
     +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
-\draw
+\path
     (4,0) node [draw,below,minimum width=2cm,minimum height=6cm] (f) {}
     +(0,-0.6) node [draw,minimum width=2cm,fill=red,minimum height=1cm] {stack}
     +(0,-1.8) node [draw,minimum width=2cm,fill=green] {heap}
     +(0,-3.2) node [draw,minimum width=2cm,fill=yellow] {lib1}
     +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
-\draw
+\path
     (8.5,0) node [draw,below,minimum width=2cm,minimum height=6cm] (e) {}
     +(0,-0.8) node [draw,minimum width=2cm,fill=red] {stack}
     +(0,-4.1) node [draw,minimum width=2cm,fill=yellow] {lib1}
@@ -258,7 +258,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{Page Protection}
 \begin{frame}{Page Protection}
 \begin{tikzpicture}
-\draw
+\path
     (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (proc) {}
     +(0,-0.5) node [draw,minimum width=2cm,fill=red] (stack) {stack}
     +(0,-1.8) node [draw,minimum width=2cm,fill=green] (jit) {JIT}
@@ -287,6 +287,46 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item {\texttt mmap(PROT\_WRITE \textpipe{} PROT\_EXEC)}
     \item sysctl kern.wxabort=1
 \end{itemize}
+\end{frame}
+
+\subsection{ROP Return Oriented Programming}
+\begin{frame}{ROP Return Oriented Programming}
+\begin{tikzpicture}
+\path
+    [minimum width=2cm,below]
+    (0,0) node [minimum height=6cm] (stack) {};
+\draw
+    (stack.south west) -- (stack.north west) --
+    (stack.north east) -- (stack.south east);
+\path
+    [minimum width=2cm,below]
+    (stack.north) node (gap) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=0.8cm] (frame) {frame}
+    (frame.south) node [draw,fill=red] (pointer2) {pointer}
+    (pointer2.south) node [draw,fill=red] (pointer1) {pointer}
+    (pointer1.south) node [draw,fill=red] (return) {return}
+    (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (buffer.south) node {...};
+\draw
+    (stack.north west) +(-1,0) coordinate (sstart)
+    (stack.south west) +(-1,0) coordinate (send)
+    [->] (sstart) -- (send) node [near end,left] {stack};
+\draw
+    (buffer.south west) +(-0.5,0) coordinate (bstart)
+    (frame.south west) +(-0.5,0) coordinate (bend)
+    [->] (bstart) -- (bend) node [near end,left] {overflow};
+
+\path
+    [text width=3cm,below,align=left]
+    (5,0) node [draw,minimum height=6cm] (text) {}
+    +(0,-0.5) node [draw,fill=blue!30] (gadget0) {mov \$1,rdi\\ ret}
+    +(0,-2.5) node [draw,fill=blue!30] (gadget1) {mov \$2,rsi\\ ret}
+    +(0,-4.3) node [draw,fill=blue!30] (gadget2) {mov \$59,eax\\ syscall};
+\draw (text.east) node [anchor=west] {text};
+\draw [->] (return.east) -- (gadget0.north west);
+\draw [->] (pointer1.east) -- (gadget1.north west);
+\draw [->] (pointer2.east) -- (gadget2.north west);
+\end{tikzpicture}
 \end{frame}
 
 \section{Compiler}

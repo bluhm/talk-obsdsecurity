@@ -1,5 +1,4 @@
 
-ROP
 trap sledge
 random page
 arc4random
@@ -12,6 +11,8 @@ stack protector cookie
 -fwrapv
 OpenNTPD
 LibreSSL
+ebx
+BROP
 
 mallocarray
 explicit_bzero/freezero
@@ -26,5 +27,6 @@ library PIE
 static PIE
 SROP signal
 w^x
+ROP
 stack-protector to syslog
 https://www.openbsd.org/innovations.html
