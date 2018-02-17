@@ -232,7 +232,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
 \path
     (8.5,0) node [draw,below,minimum width=2cm,minimum height=6cm] (e) {}
-    +(0,-0.8) node [draw,minimum width=2cm,fill=red] {stack}
+    +(0,-0.6) node [draw,minimum width=2cm,fill=red] {stack}
     +(0,-4.1) node [draw,minimum width=2cm,fill=yellow] {lib1}
     +(0,-5.2) node [draw,minimum width=2cm,fill=magenta] {prog};
 \draw [->] (p) to [thick,bend left,edge label={fork(2)}] (f);
@@ -245,8 +245,8 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \includegraphics[width=\textwidth]{img/libc.ps}
 \end{frame}
 
-\subsection{LibC Reinking}
-\begin{frame}{LibC Reinking}
+\subsection{LibC Relinking}
+\begin{frame}{LibC Relinking}
 \includegraphics[width=\textwidth]{img/new-libc.ps}
 \end{frame}
 
@@ -364,7 +364,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     [text width=2.7cm,below,align=left]
     (4.5,0) node [draw,minimum height=6cm] (text) {}
     +(0,-0.5) node [draw,fill=blue!30] (gadget0) {mov \$1,rdi\\ ret}
-    +(0,-2.5) node [draw,fill=blue!30] (gadget1) {mov \$2,rsi\\ ret}
+    +(0,-2.3) node [draw,fill=blue!30] (gadget1) {nop\\ mov \$2,rsi\\ ret}
     +(0,-4.3) node [draw,fill=blue!30] (gadget2) {mov \$59,eax\\ syscall};
 \draw (text.east) node [anchor=west] {text};
 \draw [->] (return.east) -- (gadget0.north west);
@@ -373,6 +373,22 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{tikzpicture}
 \end{frame}
 
+\subsection{Trap Sledge}
+\begin{frame}[fragile]{Trap Sledge}
+\begin{verbatim}
+40d435: cc           int3
+40d436: cc           int3
+......
+40d43e: cc           int3
+40d43f: cc           int3
+40d440: 55           push %rbp
+40d441: 48 89 e5     mov  %rsp,%rbp
+40d444: 48 8b 45 10  mov  0x10(%rbp),%rax
+40d448: 48 8b 55 18  mov  0x18(%rbp),%rdx
+40d44c: 5d           pop  %rbp
+40d44d: c3           retq
+\end{verbatim}
+\end{frame}
 
 \section{Compiler}
 
@@ -395,11 +411,11 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item Man Pages at {\small \url{https://man.openbsd.org/}}\\
 	\texttt
 	pledge(2)
-	kbind(2) 
+	kbind(2)
 	sendsyslog(2)
 	getentropy(2)
 	getdtablecount(2)
-	
+	clang-local(1)
 \end{itemize}
 \end{frame}
 

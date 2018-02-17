@@ -1,5 +1,4 @@
 
-trap sledge
 random page
 arc4random
 rand(3), random(3)
@@ -25,6 +24,7 @@ sendsyslog
 fd exhaustion
 library PIE
 static PIE
+trap sledge
 SROP signal
 w^x
 ROP
