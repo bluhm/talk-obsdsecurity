@@ -1,15 +1,12 @@
 
-random page
-arc4random
-rand(3), random(3)
-boot.random
 karl, random link, gap, locore0
 malloc options, unmap, guard pages, canaries
-libc relinking
-stack protector cookie
+stack protector
 -fwrapv
 OpenNTPD
 LibreSSL
+-rwx------ root wheel /bsd
+kern.allowkmem=1
 
 mallocarray
 explicit_bzero/freezero
@@ -19,6 +16,7 @@ getentropy
 fork+exec (ssh)
 privsep
 sendsyslog
+libc relinking
 fd exhaustion
 library PIE
 static PIE
@@ -30,3 +28,7 @@ ROP
 ebx
 stack-protector to syslog
 https://www.openbsd.org/innovations.html
+arc4random
+rand(3), random(3)
+random page
+boot.random

@@ -57,6 +57,39 @@
 \end{itemize}
 \end{frame}
 
+\subsection{Random Everywhere}
+\begin{frame}{Random Everywhere}
+\begin{itemize}
+    \item {\texttt arc4random()} ChaCha20
+    \item safe {\texttt fork()}
+    \item {\texttt getentropy(buf, buflen)}
+    \item {\texttt srand[om]\_deterministic(seed)}
+    \item {\texttt .openbsd.randomdata} ELF section
+    \item /etc/random.seed
+    \item /var/db/host.random
+\end{itemize}
+\end{frame}
+
+\subsection{Random ELF section}
+\begin{frame}{Random ELF section}
+\begin{itemize}
+    \item kernel
+    \begin{itemize}
+	\item stack protector
+	\item {\texttt arc4random(9)}
+    \end{itemize}
+    \item libc
+    \begin{itemize}
+	\item stack protector
+	\item {\texttt setjmp(3)/longjmp(3)}
+    \end{itemize}
+    \item ld.so
+    \begin{itemize}
+	\item stack protector
+	\item {\texttt kbind(3) cookie}
+    \end{itemize}
+\end{itemize}
+\end{frame}
 
 \section{kbind(2)}
 
@@ -378,25 +411,25 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 
 \subsection{Trap Sledge}
 \begin{frame}[fragile]{Trap Sledge}
-\begin{verbatim}
-40d435: cc           int3
-40d436: cc           int3
+\begin{alltt}
+40d435: {\color{red}cc}           int3
+40d436: {\color{red}cc}           int3
 ......
-40d43e: cc           int3
-40d43f: cc           int3
+40d43e: {\color{red}cc}           int3
+40d43f: {\color{red}cc}           int3
 40d440: 55           push %rbp
 40d441: 48 89 e5     mov  %rsp,%rbp
 40d444: 48 8b 45 10  mov  0x10(%rbp),%rax
 40d448: 48 8b 55 18  mov  0x18(%rbp),%rdx
 40d44c: 5d           pop  %rbp
 40d44d: c3           retq
-\end{verbatim}
+\end{alltt}
 \end{frame}
 
 \subsection{0xc3 Return from Anywhere}
 \begin{frame}[fragile]{0xc3 Return from Anywhere}
 \begin{itemize}
-    \item objdump -d /usr/bin/clang 
+    \item objdump -d /usr/bin/clang
 \end{itemize}
 \begin{alltt}
 4022ff: 48 83 c0 {\color{blue}08}  add  $0x8,%rax
@@ -404,11 +437,11 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 402306: 75 ed        jne  4022f5
 \end{alltt}
 \begin{itemize}
-    \item objdump -d --start-address=0x402302 /usr/bin/clang 
+    \item objdump -d --start-address=0x402302 /usr/bin/clang
 \end{itemize}
 \begin{alltt}
 402302: {\color{blue}08 48 39}     or   %cl,0x39(%rax)
-402305: {\color{red}c3}           retq   
+402305: {\color{red}c3}           retq
 \end{alltt}
 \end{frame}
 
@@ -454,7 +487,6 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     node [anchor=west,midway] {read/write};
 \draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (gap3.east)
     node [anchor=west,near end] {crash};
-
 \end{tikzpicture}
 \end{frame}
 
@@ -484,6 +516,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 	getentropy(2)
 	getdtablecount(2)
 	clang-local(1)
+	random(3)
 \end{itemize}
 \end{frame}
 
