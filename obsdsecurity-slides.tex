@@ -73,11 +73,13 @@
 \end{itemize}
 \end{frame}
 
+\section{Random}
+
 \subsection{Random Everywhere}
 \begin{frame}{Random Everywhere}
 \begin{itemize}
-    \item \texttt{arc4random()} ChaCha20
-    \item safe \texttt{fork()}
+    \item \texttt{arc4random(3)} ChaCha20
+    \item safe \texttt{fork(2)}
     \item \texttt{getentropy(buf, buflen)}
     \item \texttt{srand[om]\_deterministic(seed)}
     \item \texttt{.openbsd.randomdata} ELF section
@@ -97,12 +99,12 @@
     \item libc
     \begin{itemize}
 	\item stack protector guard
-	\item \texttt{setjmp(3)/longjmp(3)}
+	\item \texttt{setjmp(3)}/\texttt{longjmp(3)}
     \end{itemize}
     \item ld.so
     \begin{itemize}
 	\item stack protector guard
-	\item \texttt{kbind(3) cookie}
+	\item \texttt{kbind(3)} cookie
     \end{itemize}
 \end{itemize}
 \end{frame}
@@ -605,14 +607,14 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 
 \section{SROP}
 
-\subsection{SROP Signal Return Oriented Programming}
-\begin{frame}{SROP Signal Return Oriented Programming}
-\includegraphics[width=\textwidth]{img/srop.ps}
-\end{frame}
-
 \subsection{sigreturn(2) from Signal Handler}
 \begin{frame}{sigreturn(2) from Signal Handler}
 \includegraphics[width=\textwidth]{img/sigreturn.ps}
+\end{frame}
+
+\subsection{SROP Signal Return Oriented Programming}
+\begin{frame}{SROP Signal Return Oriented Programming}
+\includegraphics[width=\textwidth]{img/srop.ps}
 \end{frame}
 
 \subsection{Signal Cookie}
@@ -649,7 +651,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{Secure Compiler Defaults}
 \begin{frame}{Secure Compiler Defaults}
 \begin{itemize}
-    \item clang 5.0.1, gcc 4.2.1
+    \item clang 5.0.1, gcc 4.2.1, gcc 3.3.6
     \item PIE by default
     \item -fstack-protector-strong
     \item -fno-strict-aliasing
@@ -661,15 +663,6 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 
 \section{Conclusion}
 
-\subsection{Questions}
-\begin{frame}{Questions}
-\begin{center}
-\begin{tikzpicture}
-\draw [font=\Huge] node {?};
-\end{tikzpicture}
-\end{center}
-\end{frame}
-
 \subsection{Links}
 \begin{frame}{Links}
 \begin{itemize}
@@ -678,16 +671,27 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item deraadt@ slides about mitigations
 	{\small \url{https://www.openbsd.org/papers/bsdtw.pdf}}
     \item man pages at {\small \url{https://man.openbsd.org/}}\\
-	\texttt{pledge(2)
-	kbind(2)
-	sendsyslog(2)
+	\texttt{malloc.conf(3)}
+	arc4random(3)
 	getentropy(2)
+	random(3)
+	pledge(2)
+	sendsyslog(2)
+	kbind(2)
 	getdtablecount(2)
+	sigreturn(2)
 	gcc-local(1)
 	clang-local(1)
-	random(3)
-	malloc.conf(3)}
 \end{itemize}
+\end{frame}
+
+\subsection{Questions}
+\begin{frame}{Questions}
+\begin{center}
+\begin{tikzpicture}
+\draw [font=\Huge] node {?};
+\end{tikzpicture}
+\end{center}
 \end{frame}
 
 \end{document}
