@@ -36,6 +36,8 @@
 \tableofcontents
 \end{frame}
 
+\section{Malloc}
+
 \subsection{Avoid malloc(3) Overflow}
 \begin{frame}{Avoid malloc(3) Overflow}
 \begin{itemize}
@@ -64,11 +66,8 @@
     \item guard pages
     \item double free check
     \item use after free check
-    \item junking
-    \begin{itemize}
-	\item 0xdb allocate
-	\item 0xdf free
-    \end{itemize}
+    \item allocate junking
+    \item free junking
     \item canaries
     \item unmap pages
 \end{itemize}
@@ -108,40 +107,7 @@
 \end{itemize}
 \end{frame}
 
-\section{kbind(2)}
-
-\subsection{Lazy Binding}
-\begin{frame}{Lazy Binding}
-\begin{tikzpicture}
-\draw
-    node [draw,minimum height=3cm,minimum width=1.5cm] (prog) {Prog};
-\draw (prog.east) [->] -- ++(4,0) node [midway,above] {function()} -- ++(0,-1)
-    node [draw,below] (plt) {PLT};
-\draw (plt.south) [<-,dotted,thick] -- ++(0,-2)
-    node [midway,right,align=center] {read\\ indirect\\ jump}
-    node [draw,solid,thin,below] (got) {GOT};
-in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
-    node [midway,below,align=center] {modify\\ function\\ address}
-    node [draw,solid,thin,left,black] (ldso) {ld.so};
-\draw (plt.west) [<->] -|
-    node [near end,left,align=center] {lazy\\ binding} (ldso);
-\draw (plt.east) [->] -- ++(3,0) node [midway,above] {function()}
-    node [draw,right,minimum height=3cm,minimum width=1.5cm] (lib) {Lib};
-\end{tikzpicture}
-\end{frame}
-
-\subsection{kbind(2) System Call}
-\begin{frame}{kbind(2) System Call}
-\begin{itemize}
-    \item Procedure Linkage Table
-    \item Global Offset Table
-    \item avoid writeable table of code pointers
-    \item \texttt{kbind(param, psize, cookie)}
-    \item \texttt{struct \_\_kbind \{ kb\_addr; kb\_size; \} param}
-\end{itemize}
-\end{frame}
-
-\section{pledge(2)}
+\section{Pledge}
 
 \subsection{pledge(2) Motivation}
 \begin{frame}{pledge(2) Motivation}
@@ -177,9 +143,10 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{New System Calls}
 \begin{frame}{New System Calls}
 \begin{itemize}
-    \item \texttt{socket(..., SOCK\_DGRAM \textpipe{} SOCK\_DNS, ...) }
-    \item \texttt{sendsyslog("log message", 11, LOG\_CONS) }
-    \item \texttt{getentropy(buf, buflen) }
+    \item \texttt{socket(..., SOCK\_DGRAM \textpipe{} SOCK\_DNS, ...)}
+    \item \texttt{sendsyslog("log message", 11, LOG\_CONS)}
+    \item \texttt{getentropy(buf, buflen)}
+    \item \texttt{kbind(param, psize, cookie)}
 \end{itemize}
 \end{frame}
 
@@ -193,10 +160,41 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
-\section{Priviledge Separation}
+\subsection{Lazy Binding}
+\begin{frame}{Lazy Binding}
+\begin{tikzpicture}
+\draw
+    node [draw,minimum height=3cm,minimum width=1.5cm] (prog) {Prog};
+\draw (prog.east) [->] -- ++(4,0) node [midway,above] {function()} -- ++(0,-1)
+    node [draw,below] (plt) {PLT};
+\draw (plt.south) [<-,dotted,thick] -- ++(0,-2)
+    node [midway,right,align=center] {read\\ indirect\\ jump}
+    node [draw,solid,thin,below] (got) {GOT};
+in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
+    node [midway,below,align=center] {modify\\ function\\ address}
+    node [draw,solid,thin,left,black] (ldso) {ld.so};
+\draw (plt.west) [<->] -|
+    node [near end,left,align=center] {lazy\\ binding} (ldso);
+\draw (plt.east) [->] -- ++(3,0) node [midway,above] {function()}
+    node [draw,right,minimum height=3cm,minimum width=1.5cm] (lib) {Lib};
+\end{tikzpicture}
+\end{frame}
 
-\subsection{Priviledge Separation in Processes}
-\begin{frame}{Priviledge Separation in Processes}
+\subsection{kbind(2) System Call}
+\begin{frame}{kbind(2) System Call}
+\begin{itemize}
+    \item Procedure Linkage Table
+    \item Global Offset Table
+    \item avoid writeable table of code pointers
+    \item \texttt{kbind(param, psize, cookie)}
+    \item \texttt{struct \_\_kbind \{ kb\_addr; kb\_size; \} param}
+\end{itemize}
+\end{frame}
+
+\section{Privilege Separation}
+
+\subsection{Privilege Separation in Processes}
+\begin{frame}{Privilege Separation in Processes}
 \begin{itemize}
     \item identify isolated tasks with high risk
     \item \texttt{socketpair(2)}
@@ -239,7 +237,219 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
-\section{Virtual Address Layout}
+\section{Buffer Overflow}
+
+\subsection{Stack Buffer Overflow}
+\begin{frame}{Stack Buffer Overflow}
+\begin{tikzpicture}
+\path
+    [minimum width=3cm,below]
+    (0,0) node [minimum height=6cm] (stack) {};
+\draw
+    (stack.south west) -- (stack.north west) --
+    (stack.north east) -- (stack.south east);
+\path
+    [minimum width=3cm,below]
+    (stack.north) node (gap) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
+    (frame2.south) node [draw,fill=green!60] (return1) {return}
+    (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
+    (frame1.south) node [draw,fill=red] (nop) {nop sleg}
+    (nop.south) node [draw,fill=red,minimum height=0.8cm] (payload) {payload}
+    (payload.south) node [draw,fill=red] (return) {return}
+    (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (buffer.south) node {...};
+\draw
+    (stack.north west) +(-1,0) coordinate (sstart)
+    (stack.south west) +(-1,0) coordinate (send)
+    [->] (sstart) -- (send) node [near end,left] {stack};
+\draw
+    (buffer.south west) +(-0.5,0) coordinate (bstart)
+    (frame1.south west) +(-0.5,0) coordinate (bend)
+    [->] (bstart) -- (bend) node [near end,left] {overflow};
+\draw [->] (return.east) .. controls +(1,0) and +(1,0) .. (nop.east)
+    node [anchor=west,midway] {execute};
+\end{tikzpicture}
+\end{frame}
+
+\subsection{Stack Protector}
+\begin{frame}{Stack Protector}
+\begin{tikzpicture}
+\path
+    [minimum width=2cm,below]
+    (0,0) node [minimum height=6cm] (stack) {};
+\draw
+    (stack.south west) -- (stack.north west) --
+    (stack.north east) -- (stack.south east);
+\path
+    [minimum width=2cm,below]
+    (stack.north) node (gap) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=1.5cm] (frame) {frame}
+    (frame.south) node [draw,fill=green!60] (return) {return}
+    (return.south) node [draw,fill=yellow!60] (base) {baseptr}
+    (base.south) node [draw,text=white,fill=black] (guard) {guard}
+    (guard.south) node [draw,fill=yellow!60,minimum height=1.2cm] (buffer)
+	{buffer}
+    (buffer.south) node {...};
+\path
+    (guard.east) node [anchor=west,align=center] {fill with\\ random};
+
+\path
+    [minimum width=2cm,below]
+    (6,0) node [minimum height=6cm] (stack) {};
+\draw
+    (stack.south west) -- (stack.north west) --
+    (stack.north east) -- (stack.south east);
+\path
+    [minimum width=2cm,below]
+    (stack.north) node (gap) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=1cm] (frame) {frame}
+    (frame.south) node [draw,fill=red,minimum height=.5cm] (overflow) {}
+    (overflow.south) node [draw,fill=red] (return) {return}
+    (return.south) node [draw,fill=red] (base) {baseptr}
+    (base.south) node [draw,text=red,fill=black] (guard) {guard}
+    (guard.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (buffer.south) node {...};
+\draw
+    (buffer.south west) +(-0.5,0) coordinate (bstart)
+    (frame.south west) +(-0.5,0) coordinate (bend)
+    [->] (bstart) -- (bend) node [near end,left] {overflow};
+\path
+    (guard.east) node [anchor=west,align=center] {check\\ before\\ return};
+\end{tikzpicture}
+\end{frame}
+
+\subsection{Page Protection}
+\begin{frame}{Page Protection}
+\begin{tikzpicture}
+\path
+    (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (proc) {}
+    +(0,-0.5) node [draw,minimum width=2cm,fill=red] (stack) {stack}
+    +(0,-1.8) node [draw,minimum width=2cm,fill=green] (jit) {JIT}
+    +(0,-3.1) node [draw,minimum width=2cm,fill=blue] (bss) {bss}
+    +(0,-3.9) node [draw,minimum width=2cm,fill=yellow] (data) {data}
+    +(0,-4.7) node [draw,minimum width=2cm,fill=brown] (rodata) {rodata}
+    +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] (text) {text};
+\draw (stack.east) [<-] -- +(1,0) node [anchor=west] {read/write};
+\draw (jit.east) +(1,0) node [anchor=south west] (mwrite)
+    {mprotect(PROT\_WRITE)} (mwrite.west) [->] -- (jit.east);
+\draw (jit.east) +(1,0) node [anchor=north west] (mexec)
+    {mprotect(PROT\_EXEC)} (mexec.west) [->] -- (jit.east);
+\draw (bss.east) [<-] -- +(1,0) node [anchor=west] {read/write};
+\draw (data.east) [<-] -- +(1,0) node [anchor=west] {read/write};
+\draw (rodata.east) [<-] -- +(1,0) node [anchor=west] {read};
+\draw (text.east) [<-] -- +(1,0) node [anchor=west] {read/exec};
+\end{tikzpicture}
+\end{frame}
+
+\subsection{W\^{}X Write Xor Execute}
+\begin{frame}{W\^{}X Write Xor Execute}
+\begin{itemize}
+    \item ld -z wxneeded
+    \item mount -o wxallowed
+    \item \texttt{mprotect(..., PROT\_WRITE \textpipe{} PROT\_EXEC)}
+    \item \texttt{mmap(..., PROT\_WRITE \textpipe{} PROT\_EXEC, ...)}
+    \item sysctl kern.wxabort=1
+\end{itemize}
+\end{frame}
+
+\section{ROP}
+
+\subsection{ROP Return Oriented Programming}
+\begin{frame}{ROP Return Oriented Programming}
+\begin{tikzpicture}
+\path
+    [minimum width=2cm,below]
+    (0,0) node [minimum height=6cm] (stack) {};
+\draw
+    (stack.south west) -- (stack.north west) --
+    (stack.north east) -- (stack.south east);
+\path
+    [minimum width=2cm,below]
+    (stack.north) node (gap) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
+    (frame2.south) node [draw,fill=green!60] (return1) {return}
+    (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
+    (frame1.south) node [draw,fill=red] (pointer2) {pointer}
+    (pointer2.south) node [draw,fill=red] (pointer1) {pointer}
+    (pointer1.south) node [draw,fill=red] (return) {return}
+    (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (buffer.south) node {...};
+\draw
+    (stack.north west) +(-1,0) coordinate (sstart)
+    (stack.south west) +(-1,0) coordinate (send)
+    [->] (sstart) -- (send) node [near end,left] {stack};
+\draw
+    (buffer.south west) +(-0.5,0) coordinate (bstart)
+    (frame1.south west) +(-0.5,0) coordinate (bend)
+    [->] (bstart) -- (bend) node [near end,left] {overflow};
+
+\path
+    [text width=2.7cm,below,align=left]
+    (4.5,0) node [draw,minimum height=6cm] (text) {}
+    +(0,-0.5) node [draw,fill=blue!30] (gadget0) {mov \$1,rdi\\ ret}
+    +(0,-2.3) node [draw,fill=blue!30] (gadget1) {nop\\ mov \$2,rsi\\ ret}
+    +(0,-4.3) node [draw,fill=blue!30] (gadget2) {mov \$59,eax\\ syscall};
+\draw (text.east) node [anchor=west] {text};
+\draw [->] (return.east) -- (gadget0.north west);
+\draw [->] (pointer1.east) -- (gadget1.north west);
+\draw [->] (pointer2.east) -- (gadget2.north west);
+\end{tikzpicture}
+\end{frame}
+
+\subsection{Trap Sledge}
+\begin{frame}[fragile]{Trap Sledge}
+\begin{alltt}
+40d435: \textcolor{red}{cc}           int3
+40d436: \textcolor{red}{cc}           int3
+......
+40d43e: \textcolor{red}{cc}           int3
+40d43f: \textcolor{red}{cc}           int3
+40d440: 55           push %rbp
+40d441: 48 89 e5     mov  %rsp,%rbp
+40d444: 48 8b 45 10  mov  0x10(%rbp),%rax
+40d448: 48 8b 55 18  mov  0x18(%rbp),%rdx
+40d44c: 5d           pop  %rbp
+40d44d: c3           retq
+\end{alltt}
+\end{frame}
+
+\subsection{0xc3 Return from Anywhere}
+\begin{frame}[fragile]{0xc3 Return from Anywhere}
+\begin{itemize}
+    \item objdump -d /usr/bin/clang
+\end{itemize}
+\begin{alltt}
+4022ff: 48 83 c0 \textcolor{blue}{08}  add  $0x8,%rax
+402303: \textcolor{blue}{48 39} \textcolor{red}{c3}     cmp  %rax,%rbx
+402306: 75 ed        jne  4022f5
+\end{alltt}
+\begin{itemize}
+    \item objdump -d --start-address=0x402302 /usr/bin/clang
+\end{itemize}
+\begin{alltt}
+402302: \textcolor{blue}{08 48 39}     or   %cl,0x39(%rax)
+402305: \textcolor{red}{c3}           retq
+\end{alltt}
+\end{frame}
+
+\subsection{Avoid RBX Register}
+\begin{frame}[fragile]{Avoid RBX Register}
+\begin{itemize}
+    \item LLVM compiler patch
+\end{itemize}
+\begin{alltt}
+-EAX,ECX,EDX,ESI,EDI,\textcolor{red}{EBX},EBP,ESP,
+-R8D,R9D,R10D,R11D,R14D,R15D,R12D,R13D
++EAX,ECX,EDX,ESI,EDI,R8D,R9D,R10D,
++R11D,R14D,R15D,R12D,R13D,\textcolor{red}{EBX},EBP,ESP
+\end{alltt}
+\begin{alltt}
+ RAX,RCX,RDX,RSI,RDI,R8,R9,R10,R11,
+-\textcolor{red}{RBX},R14,R15,R12,R13,RBP,RSP,RIP
++R14,R15,R12,R13,\textcolor{red}{RBX},RBP,RSP,RIP
+\end{alltt}
+\end{frame}
 
 \subsection{ASLR Address Space Layout Randomization}
 \begin{frame}{ASLR Address Space Layout Randomization}
@@ -263,6 +473,35 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \draw (lib2.east) [<-] -- (ldso.west);
 \draw (prog.south east) [<-] -- +(1,0) node [anchor=west]
     {position independent executable};
+\end{tikzpicture}
+\end{frame}
+
+\section{BROP}
+
+\subsection{BROP Blind Return Oriented Programming}
+\begin{frame}{BROP Blind Return Oriented Programming}
+\begin{tikzpicture}
+    [minimum width=2cm]
+\path
+    (0,0) node [draw,minimum height=6cm] (memory) {}
+    [below]
+    (memory.north) node (gap1) {}
+    (gap1.south) node [draw,minimum height=2cm,fill=blue!30] (text) {text}
+    (text.south) node (gap2) {}
+    (gap2.south) node [draw,,fill=yellow!30] (pointer) {pointer}
+    (pointer.south) node [draw,minimum height=2cm,fill=yellow!30] (data) {data}
+    (data.south) node (gap3) {};
+\draw [<-] (text.west) -- node [midway,above] {execute}
+    +(-3,0) node [left,draw,fill=red,minimum width=2cm] (pexe) {pointer};
+\draw [->] (pexe.east) -- (gap2.west) node [midway,below] {crash};
+\draw [<-] (pointer.west) -- node [midway,below] {indirect}
+    +(-3,0) node [left,draw,fill=red,minimum width=2cm] (pind) {pointer};
+\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (text.east)
+    node [anchor=west,midway] {execute};
+\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (data.east)
+    node [anchor=west,midway] {read/write};
+\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (gap3.east)
+    node [anchor=west,near end] {crash};
 \end{tikzpicture}
 \end{frame}
 
@@ -362,6 +601,8 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
+\section{SROP}
+
 \subsection{SROP Signal Return Oriented Programming}
 \begin{frame}{SROP Signal Return Oriented Programming}
 \includegraphics[width=\textwidth]{img/srop.ps}
@@ -377,242 +618,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \includegraphics[width=\textwidth]{img/anti-srop.ps}
 \end{frame}
 
-\subsection{Page Protection}
-\begin{frame}{Page Protection}
-\begin{tikzpicture}
-\path
-    (0,0) node [draw,below,minimum width=2cm,minimum height=6cm] (proc) {}
-    +(0,-0.5) node [draw,minimum width=2cm,fill=red] (stack) {stack}
-    +(0,-1.8) node [draw,minimum width=2cm,fill=green] (jit) {JIT}
-    +(0,-3.1) node [draw,minimum width=2cm,fill=blue] (bss) {bss}
-    +(0,-3.9) node [draw,minimum width=2cm,fill=yellow] (data) {data}
-    +(0,-4.7) node [draw,minimum width=2cm,fill=brown] (rodata) {rodata}
-    +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] (text) {text};
-\draw (stack.east) [<-] -- +(1,0) node [anchor=west] {read/write};
-\draw (jit.east) +(1,0) node [anchor=south west] (mwrite)
-    {mprotect(PROT\_WRITE)} (mwrite.west) [->] -- (jit.east);
-\draw (jit.east) +(1,0) node [anchor=north west] (mexec)
-    {mprotect(PROT\_EXEC)} (mexec.west) [->] -- (jit.east);
-\draw (bss.east) [<-] -- +(1,0) node [anchor=west] {read/write};
-\draw (data.east) [<-] -- +(1,0) node [anchor=west] {read/write};
-\draw (rodata.east) [<-] -- +(1,0) node [anchor=west] {read};
-\draw (text.east) [<-] -- +(1,0) node [anchor=west] {read/exec};
-\end{tikzpicture}
-\end{frame}
-
-\subsection{W\^{}X Write Xor Execute}
-\begin{frame}{W\^{}X Write Xor Execute}
-\begin{itemize}
-    \item ld -z wxneeded
-    \item mount -o wxallowed
-    \item \texttt{mprotect(..., PROT\_WRITE \textpipe{} PROT\_EXEC)}
-    \item \texttt{mmap(..., PROT\_WRITE \textpipe{} PROT\_EXEC, ...)}
-    \item sysctl kern.wxabort=1
-\end{itemize}
-\end{frame}
-
-\subsection{Stack Buffer Overflow}
-\begin{frame}{Stack Buffer Overflow}
-\begin{tikzpicture}
-\path
-    [minimum width=3cm,below]
-    (0,0) node [minimum height=6cm] (stack) {};
-\draw
-    (stack.south west) -- (stack.north west) --
-    (stack.north east) -- (stack.south east);
-\path
-    [minimum width=3cm,below]
-    (stack.north) node (gap) {}
-    (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
-    (frame2.south) node [draw,fill=green!60] (return1) {return}
-    (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
-    (frame1.south) node [draw,fill=red] (nop) {nop sleg}
-    (nop.south) node [draw,fill=red,minimum height=0.8cm] (payload) {payload}
-    (payload.south) node [draw,fill=red] (return) {return}
-    (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
-    (buffer.south) node {...};
-\draw
-    (stack.north west) +(-1,0) coordinate (sstart)
-    (stack.south west) +(-1,0) coordinate (send)
-    [->] (sstart) -- (send) node [near end,left] {stack};
-\draw
-    (buffer.south west) +(-0.5,0) coordinate (bstart)
-    (frame1.south west) +(-0.5,0) coordinate (bend)
-    [->] (bstart) -- (bend) node [near end,left] {overflow};
-\draw [->] (return.east) .. controls +(1,0) and +(1,0) .. (nop.east)
-    node [anchor=west,midway] {execute};
-\end{tikzpicture}
-\end{frame}
-
-\subsection{Stack Protector}
-\begin{frame}{Stack Protector}
-\begin{tikzpicture}
-\path
-    [minimum width=2cm,below]
-    (0,0) node [minimum height=6cm] (stack) {};
-\draw
-    (stack.south west) -- (stack.north west) --
-    (stack.north east) -- (stack.south east);
-\path
-    [minimum width=2cm,below]
-    (stack.north) node (gap) {}
-    (gap.south) node [draw,fill=yellow!60,minimum height=1.5cm] (frame) {frame}
-    (frame.south) node [draw,fill=green!60] (return) {return}
-    (return.south) node [draw,fill=yellow!60] (base) {baseptr}
-    (base.south) node [draw,text=white,fill=black] (guard) {guard}
-    (guard.south) node [draw,fill=yellow!60,minimum height=1.2cm] (buffer)
-	{buffer}
-    (buffer.south) node {...};
-\path
-    (guard.east) node [anchor=west,align=center] {fill with\\ random};
-
-\path
-    [minimum width=2cm,below]
-    (6,0) node [minimum height=6cm] (stack) {};
-\draw
-    (stack.south west) -- (stack.north west) --
-    (stack.north east) -- (stack.south east);
-\path
-    [minimum width=2cm,below]
-    (stack.north) node (gap) {}
-    (gap.south) node [draw,fill=yellow!60,minimum height=1cm] (frame) {frame}
-    (frame.south) node [draw,fill=red,minimum height=.5cm] (overflow) {}
-    (overflow.south) node [draw,fill=red] (return) {return}
-    (return.south) node [draw,fill=red] (base) {baseptr}
-    (base.south) node [draw,text=red,fill=black] (guard) {guard}
-    (guard.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
-    (buffer.south) node {...};
-\draw
-    (buffer.south west) +(-0.5,0) coordinate (bstart)
-    (frame.south west) +(-0.5,0) coordinate (bend)
-    [->] (bstart) -- (bend) node [near end,left] {overflow};
-\path
-    (guard.east) node [anchor=west,align=center] {check\\ before\\ return};
-\end{tikzpicture}
-\end{frame}
-
-\subsection{ROP Return Oriented Programming}
-\begin{frame}{ROP Return Oriented Programming}
-\begin{tikzpicture}
-\path
-    [minimum width=2cm,below]
-    (0,0) node [minimum height=6cm] (stack) {};
-\draw
-    (stack.south west) -- (stack.north west) --
-    (stack.north east) -- (stack.south east);
-\path
-    [minimum width=2cm,below]
-    (stack.north) node (gap) {}
-    (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
-    (frame2.south) node [draw,fill=green!60] (return1) {return}
-    (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
-    (frame1.south) node [draw,fill=red] (pointer2) {pointer}
-    (pointer2.south) node [draw,fill=red] (pointer1) {pointer}
-    (pointer1.south) node [draw,fill=red] (return) {return}
-    (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
-    (buffer.south) node {...};
-\draw
-    (stack.north west) +(-1,0) coordinate (sstart)
-    (stack.south west) +(-1,0) coordinate (send)
-    [->] (sstart) -- (send) node [near end,left] {stack};
-\draw
-    (buffer.south west) +(-0.5,0) coordinate (bstart)
-    (frame1.south west) +(-0.5,0) coordinate (bend)
-    [->] (bstart) -- (bend) node [near end,left] {overflow};
-
-\path
-    [text width=2.7cm,below,align=left]
-    (4.5,0) node [draw,minimum height=6cm] (text) {}
-    +(0,-0.5) node [draw,fill=blue!30] (gadget0) {mov \$1,rdi\\ ret}
-    +(0,-2.3) node [draw,fill=blue!30] (gadget1) {nop\\ mov \$2,rsi\\ ret}
-    +(0,-4.3) node [draw,fill=blue!30] (gadget2) {mov \$59,eax\\ syscall};
-\draw (text.east) node [anchor=west] {text};
-\draw [->] (return.east) -- (gadget0.north west);
-\draw [->] (pointer1.east) -- (gadget1.north west);
-\draw [->] (pointer2.east) -- (gadget2.north west);
-\end{tikzpicture}
-\end{frame}
-
-\subsection{Trap Sledge}
-\begin{frame}[fragile]{Trap Sledge}
-\begin{alltt}
-40d435: \textcolor{red}{cc}           int3
-40d436: \textcolor{red}{cc}           int3
-......
-40d43e: \textcolor{red}{cc}           int3
-40d43f: \textcolor{red}{cc}           int3
-40d440: 55           push %rbp
-40d441: 48 89 e5     mov  %rsp,%rbp
-40d444: 48 8b 45 10  mov  0x10(%rbp),%rax
-40d448: 48 8b 55 18  mov  0x18(%rbp),%rdx
-40d44c: 5d           pop  %rbp
-40d44d: c3           retq
-\end{alltt}
-\end{frame}
-
-\subsection{0xc3 Return from Anywhere}
-\begin{frame}[fragile]{0xc3 Return from Anywhere}
-\begin{itemize}
-    \item objdump -d /usr/bin/clang
-\end{itemize}
-\begin{alltt}
-4022ff: 48 83 c0 \textcolor{blue}{08}  add  $0x8,%rax
-402303: \textcolor{blue}{48 39} \textcolor{red}{c3}     cmp  %rax,%rbx
-402306: 75 ed        jne  4022f5
-\end{alltt}
-\begin{itemize}
-    \item objdump -d --start-address=0x402302 /usr/bin/clang
-\end{itemize}
-\begin{alltt}
-402302: \textcolor{blue}{08 48 39}     or   %cl,0x39(%rax)
-402305: \textcolor{red}{c3}           retq
-\end{alltt}
-\end{frame}
-
-\subsection{Avoid RBX Register}
-\begin{frame}[fragile]{Avoid RBX Register}
-\begin{itemize}
-    \item LLVM compiler patch
-\end{itemize}
-\begin{alltt}
--EAX,ECX,EDX,ESI,EDI,\textcolor{red}{EBX},EBP,ESP,
--R8D,R9D,R10D,R11D,R14D,R15D,R12D,R13D
-+EAX,ECX,EDX,ESI,EDI,R8D,R9D,R10D,
-+R11D,R14D,R15D,R12D,R13D,\textcolor{red}{EBX},EBP,ESP
-\end{alltt}
-\begin{alltt}
- RAX,RCX,RDX,RSI,RDI,R8,R9,R10,R11,
--\textcolor{red}{RBX},R14,R15,R12,R13,RBP,RSP,RIP
-+R14,R15,R12,R13,\textcolor{red}{RBX},RBP,RSP,RIP
-\end{alltt}
-\end{frame}
-
-\subsection{BROP Blind Return Oriented Programming}
-\begin{frame}{BROP Blind Return Oriented Programming}
-\begin{tikzpicture}
-    [minimum width=2cm]
-\path
-    (0,0) node [draw,minimum height=6cm] (memory) {}
-    [below]
-    (memory.north) node (gap1) {}
-    (gap1.south) node [draw,minimum height=2cm,fill=blue!30] (text) {text}
-    (text.south) node (gap2) {}
-    (gap2.south) node [draw,,fill=yellow!30] (pointer) {pointer}
-    (pointer.south) node [draw,minimum height=2cm,fill=yellow!30] (data) {data}
-    (data.south) node (gap3) {};
-\draw [<-] (text.west) -- node [midway,above] {execute}
-    +(-3,0) node [left,draw,fill=red,minimum width=2cm] (pexe) {pointer};
-\draw [->] (pexe.east) -- (gap2.west) node [midway,below] {crash};
-\draw [<-] (pointer.west) -- node [midway,below] {indirect}
-    +(-3,0) node [left,draw,fill=red,minimum width=2cm] (pind) {pointer};
-\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (text.east)
-    node [anchor=west,midway] {execute};
-\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (data.east)
-    node [anchor=west,midway] {read/write};
-\draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (gap3.east)
-    node [anchor=west,near end] {crash};
-\end{tikzpicture}
-\end{frame}
+\section{Spinoffs}
 
 \subsection{LibreSSL}
 \begin{frame}{LibreSSL}
@@ -626,6 +632,18 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
+\subsection{OpenNTPD}
+\begin{frame}{OpenNTPD}
+\begin{itemize}
+    \item avoid 40 CVE a year
+    \item necessary features
+    \item privilege separation
+    \item reasonable accuracy
+\end{itemize}
+\end{frame}
+
+\section{Compiler}
+
 \subsection{Secure Compiler Defaults}
 \begin{frame}{Secure Compiler Defaults}
 \begin{itemize}
@@ -638,6 +656,8 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     \item no \texttt{malloc(3)} builtins
 \end{itemize}
 \end{frame}
+
+\section{Conclusion}
 
 \subsection{Questions}
 \begin{frame}{Questions}
