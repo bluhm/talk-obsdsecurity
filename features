@@ -1,5 +1,4 @@
 
-karl, random link, gap, locore0
 malloc options, unmap, guard pages, canaries
 -fwrapv
 OpenNTPD
@@ -7,6 +6,7 @@ LibreSSL
 -rwx------ root wheel /bsd
 kern.allowkmem=1
 
+karl, random link, gap, locore0
 mallocarray
 stack protector
 explicit_bzero/freezero

@@ -285,7 +285,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{frame}
 
 \subsection{KARL Kernel Address Randomized Link}
-\begin{frame}{Kernel Address Randomized Link}
+\begin{frame}{KARL Kernel Address Randomized Link}
 \begin{tikzpicture}
 \path
     [minimum width=2cm,above]
@@ -316,6 +316,23 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     (locore0.north east) +(0.5,0) coordinate (lend)
     (lstart) -- (lend) node [midway,right] {unmap};
 \end{tikzpicture}
+\end{frame}
+
+\subsection{Relink Time}
+\begin{frame}{Relink Time}
+\begin{itemize}
+    \item libc, libcrypto, ld.so
+    \begin{itemize}
+	\item early boot
+    \end{itemize}
+    \item kernel
+    \begin{itemize}
+	\item install
+	\item upgrade
+	\item syspatch
+	\item after boot
+    \end{itemize}
+\end{itemize}
 \end{frame}
 
 \subsection{SROP Signal Return Oriented Programming}
