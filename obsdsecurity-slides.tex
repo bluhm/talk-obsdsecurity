@@ -216,9 +216,9 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{Avoid File Descriptor Exhaustion}
 \begin{frame}{Avoid File Descriptor Exhaustion}
 \begin{itemize}
-    \item getdtablecount()
-    \item getdtablesize()
-    \item \#define FD\_RESERVE 5
+    \item \texttt{getdtablecount(2)}
+    \item \texttt{getdtablesize(2)}
+    \item \texttt{\#define FD\_RESERVE 5}
 \end{itemize}
 \end{frame}
 
@@ -282,6 +282,40 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \subsection{LibC Relinking}
 \begin{frame}{LibC Relinking}
 \includegraphics[width=\textwidth]{img/new-libc.ps}
+\end{frame}
+
+\subsection{KARL Kernel Address Randomized Link}
+\begin{frame}{Kernel Address Randomized Link}
+\begin{tikzpicture}
+\path
+    [minimum width=2cm,above]
+    (0,0) node [draw,minimum height=6cm] (kernel) {}
+    node (kerntext) {}
+    (kerntext.north) node [draw,fill=yellow!30] (locore0) {locore0}
+    (locore0.north) node [draw,minimum height=1cm] (gap) {gap}
+    (gap.north) node [draw,fill=green!30] (obj3) {obj3}
+    (obj3.north) node [draw,fill=green!30] (obj4) {obj4}
+    (obj4.north) node [draw,fill=green!30] (obj1) {obj1}
+    (obj1.north) node [draw,fill=green!30] (obj2) {obj2};
+\draw
+    (locore0.south west) [<-] -- node [above,midway] {start()}
+    +(-2,0) node [anchor=east,draw,fill=yellow!30] (boot) {boot};
+\draw
+    (locore0.north west) [->] .. controls +(-1,0) and +(-1,0) ..
+    node [midway,left] {main()} (obj1.west);
+\draw
+    (obj3.south east) +(0.5,0) coordinate (ostart)
+    (obj2.north east) +(0.5,0) coordinate (oend)
+    [<->] (ostart) -- (oend) node [midway,right] {shuffle};
+\draw
+    (gap.south east) +(0.5,0) coordinate (gstart)
+    (gap.north east) +(0.5,0) coordinate (gend)
+    [<->] (gstart) -- (gend) node [midway,right] {random};
+\path
+    (locore0.south east) +(0.5,0) coordinate (lstart)
+    (locore0.north east) +(0.5,0) coordinate (lend)
+    (lstart) -- (lend) node [midway,right] {unmap};
+\end{tikzpicture}
 \end{frame}
 
 \subsection{SROP Signal Return Oriented Programming}
