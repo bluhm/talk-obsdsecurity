@@ -339,7 +339,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \begin{frame}{Hide Kernel Addresses}
 \begin{itemize}
     \item -rwx------ root wheel /bsd
-    \item fstat(1) netstat(1)
+    \item fstat(1), netstat(1), ...
     \item /dev/kmem $\rightarrow$ \texttt{sysctl(2)}
     \item sysctl kern.allowkmem=1
 \end{itemize}
@@ -597,7 +597,30 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{tikzpicture}
 \end{frame}
 
-\section{Compiler}
+\subsection{LibreSSL}
+\begin{frame}{LibreSSL}
+\begin{itemize}
+    \item keep OpenSSL 1.0 API
+    \item fix bugs
+    \item delete crap
+    \item cleanup code
+    \item backport features
+    \item write documentation
+\end{itemize}
+\end{frame}
+
+\subsection{Secure Compiler Defaults}
+\begin{frame}{Secure Compiler Defaults}
+\begin{itemize}
+    \item clang 5.0.1, gcc 4.2.1
+    \item PIE by default
+    \item -fstack-protector-strong
+    \item -fno-strict-aliasing
+    \item -fno-strict-overflow
+    \item -fwrapv
+    \item no \texttt{malloc(3)} builtins
+\end{itemize}
+\end{frame}
 
 \subsection{Questions}
 \begin{frame}{Questions}
