@@ -335,6 +335,16 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \end{itemize}
 \end{frame}
 
+\subsection{Hide Kernel Addresses}
+\begin{frame}{Hide Kernel Addresses}
+\begin{itemize}
+    \item -rwx------ root wheel /bsd
+    \item fstat(1) netstat(1)
+    \item /dev/kmem $\rightarrow$ \texttt{sysctl(2)}
+    \item sysctl kern.allowkmem=1
+\end{itemize}
+\end{frame}
+
 \subsection{SROP Signal Return Oriented Programming}
 \begin{frame}{SROP Signal Return Oriented Programming}
 \includegraphics[width=\textwidth]{img/srop.ps}

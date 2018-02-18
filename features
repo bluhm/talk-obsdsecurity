@@ -3,8 +3,6 @@ malloc options, unmap, guard pages, canaries
 -fwrapv
 OpenNTPD
 LibreSSL
--rwx------ root wheel /bsd
-kern.allowkmem=1
 
 karl, random link, gap, locore0
 mallocarray
@@ -32,3 +30,5 @@ arc4random
 rand(3), random(3)
 random page
 boot.random
+-rwx------ root wheel /bsd
+kern.allowkmem=1
