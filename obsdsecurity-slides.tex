@@ -284,13 +284,14 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \path
     [minimum width=2cm,below]
     (stack.north) node (gap) {}
-    (gap.south) node [draw,fill=yellow!60,minimum height=1.5cm] (frame) {frame}
+    (gap.south) node [draw,fill=yellow!60,minimum height=1.2cm] (frame) {frame}
     (frame.south) node [draw,fill=green!60] (return) {return}
     (return.south) node [draw,fill=yellow!60] (base) {baseptr}
     (base.south) node [draw,text=white,fill=black] (guard) {guard}
     (guard.south) node [draw,fill=yellow!60,minimum height=1.2cm] (buffer)
 	{buffer}
-    (buffer.south) node {...};
+    (buffer.south) node [draw,fill=green!60] (pointer) {pointer}
+    (pointer.south) node {...};
 \path
     (guard.east) node [anchor=west,align=center] {fill with\\ random};
 
@@ -303,13 +304,14 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 \path
     [minimum width=2cm,below]
     (stack.north) node (gap) {}
-    (gap.south) node [draw,fill=yellow!60,minimum height=1cm] (frame) {frame}
-    (frame.south) node [draw,fill=red,minimum height=.5cm] (overflow) {}
+    (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame) {frame}
+    (frame.south) node [draw,fill=red,minimum height=.4cm] (overflow) {}
     (overflow.south) node [draw,fill=red] (return) {return}
     (return.south) node [draw,fill=red] (base) {baseptr}
     (base.south) node [draw,text=red,fill=black] (guard) {guard}
     (guard.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
-    (buffer.south) node {...};
+    (buffer.south) node [draw,fill=green!60] (pointer) {pointer}
+    (pointer.south) node {...};
 \draw
     (buffer.south west) +(-0.5,0) coordinate (bstart)
     (frame.south west) +(-0.5,0) coordinate (bend)
