@@ -1,9 +1,4 @@
-
-malloc options, unmap, guard pages, canaries
--fwrapv
-OpenNTPD
 LibreSSL
-
 karl, random link, gap, locore0
 mallocarray
 stack protector
@@ -32,3 +27,5 @@ random page
 boot.random
 -rwx------ root wheel /bsd
 kern.allowkmem=1
+-fwrapv
+malloc options, unmap, guard pages, canaries

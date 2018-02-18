@@ -57,6 +57,23 @@
 \end{itemize}
 \end{frame}
 
+\subsection{Malloc(3) Options}
+\begin{frame}{Malloc(3) Options}
+\begin{itemize}
+    \item randomize
+    \item guard pages
+    \item double free check
+    \item use after free check
+    \item junking
+    \begin{itemize}
+	\item 0xdb allocate
+	\item 0xdf free
+    \end{itemize}
+    \item canaries
+    \item unmap pages
+\end{itemize}
+\end{frame}
+
 \subsection{Random Everywhere}
 \begin{frame}{Random Everywhere}
 \begin{itemize}
@@ -644,8 +661,10 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
 	sendsyslog(2)
 	getentropy(2)
 	getdtablecount(2)
+	gcc-local(1)
 	clang-local(1)
-	random(3)}
+	random(3)
+	malloc.conf(3)}
 \end{itemize}
 \end{frame}
 
