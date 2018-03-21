@@ -13,7 +13,7 @@ libc relinking
 fd exhaustion
 library PIE
 static PIE
-trap sledge
+trap sled
 BROP
 SROP signal
 w^x

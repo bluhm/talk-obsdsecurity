@@ -22,7 +22,7 @@
 \author{Alexander Bluhm}
 \title{OpenBSD Security Features}
 \institute{genua GmbH\\ \url{bluhm@genua.de}\\ \url{bluhm@openbsd.org}}
-\date{September 20, 2018}
+\date{March 21, 2018}
 \let\Tiny\tiny
 
 \begin{document}
@@ -256,7 +256,7 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
     (frame2.south) node [draw,fill=green!60] (return1) {return}
     (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
-    (frame1.south) node [draw,fill=red] (nop) {nop sleg}
+    (frame1.south) node [draw,fill=red] (nop) {nop sled}
     (nop.south) node [draw,fill=red,minimum height=0.8cm] (payload) {payload}
     (payload.south) node [draw,fill=red] (return) {return}
     (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
