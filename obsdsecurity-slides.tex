@@ -256,10 +256,12 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
     (frame2.south) node [draw,fill=green!60] (return1) {return}
     (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
-    (frame1.south) node [draw,fill=red] (nop) {nop sled}
-    (nop.south) node [draw,fill=red,minimum height=0.8cm] (payload) {payload}
-    (payload.south) node [draw,fill=red] (return) {return}
-    (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (frame1.south) node [draw,fill=red!60] (nop) {nop sled}
+    (nop.south) node [draw,fill=red!60,minimum height=0.8cm] (payload)
+	{payload}
+    (payload.south) node [draw,fill=red!60] (return) {return}
+    (return.south) node [draw,fill=red!60,minimum height=1.2cm] (buffer)
+	{buffer}
     (buffer.south) node {...};
 \draw
     (stack.north west) +(-1,0) coordinate (sstart)
@@ -307,11 +309,12 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     [minimum width=2cm,below]
     (stack.north) node (gap) {}
     (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame) {frame}
-    (frame.south) node [draw,fill=red,minimum height=.4cm] (overflow) {}
-    (overflow.south) node [draw,fill=red] (return) {return}
-    (return.south) node [draw,fill=red] (base) {baseptr}
-    (base.south) node [draw,text=red,fill=black] (guard) {guard}
-    (guard.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (frame.south) node [draw,fill=red!60,minimum height=.4cm] (overflow) {}
+    (overflow.south) node [draw,fill=red!60] (return) {return}
+    (return.south) node [draw,fill=red!60] (base) {baseptr}
+    (base.south) node [draw,text=red!60,fill=black] (guard) {guard}
+    (guard.south) node [draw,fill=red!60,minimum height=1.2cm] (buffer)
+	{buffer}
     (buffer.south) node [draw,fill=green!60] (pointer) {pointer}
     (pointer.south) node {...};
 \draw
@@ -374,10 +377,11 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     (gap.south) node [draw,fill=yellow!60,minimum height=.8cm] (frame2) {frame}
     (frame2.south) node [draw,fill=green!60] (return1) {return}
     (return1.south) node [draw,fill=yellow!60,minimum height=0.1cm] (frame1) {}
-    (frame1.south) node [draw,fill=red] (pointer2) {pointer}
-    (pointer2.south) node [draw,fill=red] (pointer1) {pointer}
-    (pointer1.south) node [draw,fill=red] (return) {return}
-    (return.south) node [draw,fill=red,minimum height=1.2cm] (buffer) {buffer}
+    (frame1.south) node [draw,fill=red!60] (pointer2) {pointer}
+    (pointer2.south) node [draw,fill=red!60] (pointer1) {pointer}
+    (pointer1.south) node [draw,fill=red!60] (return) {return}
+    (return.south) node [draw,fill=red!60,minimum height=1.2cm] (buffer)
+	{buffer}
     (buffer.south) node {...};
 \draw
     (stack.north west) +(-1,0) coordinate (sstart)
@@ -496,10 +500,10 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     (pointer.south) node [draw,minimum height=2cm,fill=yellow!30] (data) {data}
     (data.south) node (gap3) {};
 \draw [<-] (text.west) -- node [midway,above] {execute}
-    +(-3,0) node [left,draw,fill=red,minimum width=2cm] (pexe) {pointer};
+    +(-3,0) node [left,draw,fill=red!60,minimum width=2cm] (pexe) {pointer};
 \draw [->] (pexe.east) -- (gap2.west) node [midway,below] {crash};
 \draw [<-] (pointer.west) -- node [midway,below] {indirect}
-    +(-3,0) node [left,draw,fill=red,minimum width=2cm] (pind) {pointer};
+    +(-3,0) node [left,draw,fill=red!60,minimum width=2cm] (pind) {pointer};
 \draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (text.east)
     node [anchor=west,midway] {execute};
 \draw [->] (pointer.east) .. controls +(1,0) and +(1,0) .. (data.east)
@@ -520,7 +524,8 @@ in ld.so \draw (got.west) [<-,dotted,thick,red] -- ++(-2,0)
     +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
 \path
     (4,0) node [draw,below,minimum width=2cm,minimum height=6cm] (f) {}
-    +(0,-0.6) node [draw,minimum width=2cm,fill=red,minimum height=1cm] {stack}
+    +(0,-0.6) node [draw,minimum width=2cm,fill=red,minimum height=1cm]
+	{stack}
     +(0,-1.8) node [draw,minimum width=2cm,fill=green] {heap}
     +(0,-3.2) node [draw,minimum width=2cm,fill=yellow] {lib1}
     +(0,-5.5) node [draw,minimum width=2cm,fill=magenta] {prog};
