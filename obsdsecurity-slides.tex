@@ -19,6 +19,9 @@
 \usepackage{tipa}
 \usepackage{alltt}
 \usepackage{xcolor}
+\usepackage{upquote}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
 \author{Alexander Bluhm}
 \title{OpenBSD Security Features}
 \institute{genua GmbH\\ \url{bluhm@genua.de}\\ \url{bluhm@openbsd.org}}
@@ -146,7 +149,8 @@
 \begin{frame}{New System Calls}
 \begin{itemize}
     \item \texttt{socket(..., SOCK\_DGRAM \textpipe{} SOCK\_DNS, ...)}
-    \item \texttt{sendsyslog(''log message'', 11, LOG\_CONS)}
+    \item \texttt{sendsyslog(\textquotedbl{}log message\textquotedbl{}, 11,
+	LOG\_CONS)}
     \item \texttt{getentropy(buf, buflen)}
     \item \texttt{kbind(param, psize, cookie)}
 \end{itemize}
